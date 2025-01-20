@@ -212,6 +212,41 @@
                 android:textColor="@color/livekit_audio_effect_not_standard_white"
                 android:textSize="16sp" />
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/livekit_audio_effect_design_standard_g6" />
+
+        <RelativeLayout
+            android:id="@+id/rl_mute_local_audio"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="@string/livekit_local_mute"
+                android:textColor="@color/livekit_audio_effect_not_standard_white"
+                android:textSize="16sp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/sc_mute_local_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:checked="false"
+                app:thumbTint="@color/livekit_switch_thumb_bg"
+                app:trackTint="@color/livekit_switch_track_bg" />
+        </RelativeLayout>
     </LinearLayout>
 
     <TextView

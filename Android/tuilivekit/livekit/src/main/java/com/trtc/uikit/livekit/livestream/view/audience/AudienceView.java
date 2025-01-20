@@ -31,9 +31,11 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.UserInfo;
 import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.component.audiencelist.AudienceListView;
+import com.trtc.uikit.component.audioeffect.store.AudioEffectState;
 import com.trtc.uikit.component.barrage.BarrageInputView;
 import com.trtc.uikit.component.barrage.BarrageStreamView;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
+import com.trtc.uikit.component.common.StateCache;
 import com.trtc.uikit.component.dashboard.StreamDashboardDialog;
 import com.trtc.uikit.component.gift.GiftPlayView;
 import com.trtc.uikit.component.gift.LikeButton;
@@ -60,6 +62,7 @@ import com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.CoGuestRe
 import com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.dialog.CancelRequestDialog;
 import com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.dialog.StopCoGuestDialog;
 import com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.dialog.TypeSelectDialog;
+import com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.settings.SettingsPanelDialog;
 import com.trtc.uikit.livekit.livestream.view.widgets.battle.BattleInfoView;
 import com.trtc.uikit.livekit.livestream.view.widgets.battle.BattleMemberInfoView;
 import com.trtc.uikit.livekit.livestream.view.widgets.coguest.CoGuestWidgetsView;
@@ -69,6 +72,7 @@ import com.trtc.uikit.livekit.livestreamcore.LiveCoreViewDefine;
 import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 
 import java.util.List;
+import java.util.Map;
 
 @SuppressLint("ViewConstructor")
 public class AudienceView extends BasicView {
@@ -364,6 +368,7 @@ public class AudienceView extends BasicView {
                     mLiveCoreView);
             typeSelectDialog.show();
         });
+        showSettingsIcon(false);
     }
 
     private void initDashboardIcon() {
@@ -393,6 +398,7 @@ public class AudienceView extends BasicView {
         mImageCoGuest.setOnClickListener(view -> {
             showStopCoGuestDialog();
         });
+        showSettingsIcon(true);
     }
 
     private void showStopCoGuestDialog() {
@@ -403,6 +409,15 @@ public class AudienceView extends BasicView {
     private void showCancelCoGuestRequestDialog() {
         CancelRequestDialog linkMicDialog = new CancelRequestDialog(mContext, mLiveCoreView, mLiveManager);
         linkMicDialog.show();
+    }
+
+    private void showSettingsIcon(boolean show) {
+        View view = findViewById(R.id.v_settings);
+        view.setVisibility(show ? VISIBLE : GONE);
+        view.setOnClickListener(v -> {
+            SettingsPanelDialog dialog = new SettingsPanelDialog(mContext, mLiveManager);
+            dialog.show();
+        });
     }
 
     @Override
@@ -458,10 +473,21 @@ public class AudienceView extends BasicView {
                 break;
             case LINKING:
                 mWaitingCoGuestPassView.setVisibility(GONE);
+                updateLocalAudioMuteState();
                 stopCoGuest();
                 break;
             default:
                 break;
+        }
+    }
+
+    private void updateLocalAudioMuteState() {
+        Map<String, Object> map = StateCache.getInstance().get(mRoomState.roomId);
+        if (map != null) {
+            AudioEffectState audioEffectState = (AudioEffectState) map.get("key_state_audio_effect");
+            if (audioEffectState != null) {
+                mLiveCoreView.muteMicrophone(audioEffectState.muteLocalAudio.get());
+            }
         }
     }
 

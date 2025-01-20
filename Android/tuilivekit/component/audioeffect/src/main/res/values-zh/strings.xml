@@ -7,6 +7,7 @@
     <string name="livekit_audio_settings">音频设置</string>
     <string name="livekit_music_volume">音乐音量</string>
     <string name="livekit_people_volume">人声音量</string>
+    <string name="livekit_local_mute">静音</string>
     <string name="livekit_music_pitch">音乐升降调</string>
     <string name="livekit_change_voice">变声</string>
     <string name="livekit_change_voice_none">原声</string>

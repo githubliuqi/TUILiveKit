@@ -24,6 +24,7 @@ public class AudioEffectService {
         mRoomId = roomId;
         mTRTCCloud = TUIRoomEngine.sharedInstance().getTRTCCloud();
         mAudioEffectState = getState();
+        StateCache.getInstance().subscribeToObjectRemoval(mRoomId, this::resetAudioSettings);
     }
 
     private AudioEffectState getState() {
@@ -76,5 +77,27 @@ public class AudioEffectService {
         Log.i(TAG, "[" + mRoomId + "] setVoiceVolume:[volume:" + volume + "]");
         mTRTCCloud.getAudioEffectManager().setVoiceCaptureVolume(volume);
         mAudioEffectState.voiceVolume.set(volume);
+    }
+
+    public void muteLocalAudio(boolean mute) {
+        Log.i(TAG, "[" + mRoomId + "] muteLocalAudio:[mute:" + mute + "]");
+        if (mute) {
+            TUIRoomEngine.sharedInstance().muteLocalAudio();
+        } else {
+            TUIRoomEngine.sharedInstance().unmuteLocalAudio(null);
+        }
+        mAudioEffectState.muteLocalAudio.set(mute);
+    }
+
+    private void resetAudioSettings() {
+        Log.i(TAG, "[" + mRoomId + "] resetAudioSettings:[]");
+        AudioEffectState state = new AudioEffectState();
+        TXAudioEffectManager audioEffectManager = mTRTCCloud.getAudioEffectManager();
+        audioEffectManager.setVoiceChangerType(state.changerType.get());
+        audioEffectManager.setVoiceReverbType(state.reverbType.get());
+        audioEffectManager.enableVoiceEarMonitor(state.enableVoiceEarMonitor.get());
+        audioEffectManager.setAllMusicVolume(state.musicVolume.get());
+        audioEffectManager.setVoiceEarMonitorVolume(state.earMonitorVolume.get());
+        audioEffectManager.setVoiceCaptureVolume(state.voiceVolume.get());
     }
 }

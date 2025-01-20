@@ -6,6 +6,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -67,12 +68,20 @@ public class AudioEffectPanel extends FrameLayout {
         initPeopleVolumeView();
         initEnableEarReturnView();
         initEarReturnVolume();
+        initMuteLocalAudioView();
     }
 
     private void bindViewId() {
         mTextMusicVolume = findViewById(R.id.tv_music_volume);
         mTextEarReturnVolume = findViewById(R.id.tv_ear_return_volume);
         mTextPeopleVolume = findViewById(R.id.tv_people_volume);
+    }
+
+    private void initMuteLocalAudioView() {
+        SwitchCompat switchMuteLocalAudio = findViewById(R.id.sc_mute_local_audio);
+        switchMuteLocalAudio.setChecked(mAudioEffectState.muteLocalAudio.get());
+        switchMuteLocalAudio.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> mAudioEffectService.muteLocalAudio(isChecked));
     }
 
     private void initEarReturnVolume() {

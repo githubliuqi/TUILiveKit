@@ -11,6 +11,7 @@ public class AudioEffectState {
     public LiveData<Integer>                                 musicVolume           = new LiveData<>(60);
     public LiveData<Integer>                                 earMonitorVolume      = new LiveData<>(100);
     public LiveData<Boolean>                                 enableVoiceEarMonitor = new LiveData<>(false);
+    public LiveData<Boolean>                                 muteLocalAudio        = new LiveData<>(false);
     public LiveData<TXAudioEffectManager.TXVoiceChangerType> changerType           =
             new LiveData<>(TXLiveVoiceChangerType_0);
     public LiveData<TXAudioEffectManager.TXVoiceReverbType>  reverbType            =

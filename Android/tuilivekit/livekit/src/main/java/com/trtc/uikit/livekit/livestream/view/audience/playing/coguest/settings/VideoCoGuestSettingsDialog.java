@@ -1,5 +1,7 @@
 package com.trtc.uikit.livekit.livestream.view.audience.playing.coguest.settings;
 
+import static com.trtc.uikit.livekit.livestream.state.CoGuestState.CoGuestStatus.APPLYING;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -66,11 +68,16 @@ public class VideoCoGuestSettingsDialog extends PopupDialog {
 
     private void initApplyLinkMicButton() {
         mButtonApplyLinkMic.setOnClickListener(view -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             ToastUtil.toastShortMessageCenter(getContext().getString(R.string.livekit_toast_apply_link_mic));
             mLiveStream.requestIntraRoomConnection("", 60, true, new TUIRoomDefine.ActionCallback() {
                 @Override
                 public void onSuccess() {
                     mNeedCloseCamera = false;
+                    mLiveManager.getCoGuestManager().updateCoGuestStates(APPLYING);
                 }
 
                 @Override

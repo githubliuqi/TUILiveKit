@@ -40,8 +40,6 @@ public class LiveServiceImpl implements ILiveService {
 
     @Override
     public void destroy() {
-        LiveStreamLog.info(mTag + " destroy");
-        TUIRoomEngine.destroySharedInstance();
     }
 
     @Override

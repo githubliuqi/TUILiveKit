@@ -60,7 +60,9 @@ public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyC
             ImageLoader.load(mContext, holder.imageHead, mData.get(position).avatarUrl, R.drawable.livekit_ic_avatar);
         }
         holder.textReject.setTag(mData.get(position));
+        holder.textReject.setEnabled(true);
         holder.textReject.setOnClickListener((view) -> {
+            view.setEnabled(false);
             final CoGuestState.SeatApplication seatApplication = (CoGuestState.SeatApplication) view.getTag();
             mLiveStream.respondIntraRoomConnection(seatApplication.userId, false, new TUIRoomDefine.ActionCallback() {
                 @Override
@@ -76,7 +78,9 @@ public class AnchorApplyCoGuestAdapter extends RecyclerView.Adapter<AnchorApplyC
         });
 
         holder.textAccept.setTag(mData.get(position));
+        holder.textAccept.setEnabled(true);
         holder.textAccept.setOnClickListener((view) -> {
+            view.setEnabled(false);
             final CoGuestState.SeatApplication seatApplication = (CoGuestState.SeatApplication) view.getTag();
             mLiveStream.respondIntraRoomConnection(seatApplication.userId, true, new TUIRoomDefine.ActionCallback() {
                 @Override

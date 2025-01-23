@@ -19,11 +19,11 @@ public class BeautyViewFactory {
         View beautyView = null;
         if (TEBeautyManager.getInstance().isSupportTEBeauty()) {
             beautyView = new TEBeautyView(context);
+            beautyView.setBackgroundResource(R.color.livekit_design_standard_g1);
         } else {
             beautyView = new BeautyListPanel(context);
             ((BeautyListPanel) beautyView).init(liveStreamManager);
         }
-        beautyView.setBackgroundResource(R.color.livekit_design_standard_g1);
         return beautyView;
     }
 

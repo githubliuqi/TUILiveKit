@@ -269,7 +269,8 @@ public class AnchorView extends BasicView {
             }
         });
 
-        mLiveCoreView.startCamera(true, null);
+        boolean isFrontCamera = mLiveCoreView.getMediaManager().mMediaState.isFrontCamera.get();
+        mLiveCoreView.startCamera(isFrontCamera, null);
         mLiveCoreView.startMicrophone(null);
         if (mRoomBehavior == TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM) {
             mLayoutPushing.setVisibility(VISIBLE);
@@ -354,7 +355,12 @@ public class AnchorView extends BasicView {
 
     private void initSettingsPanel() {
         findViewById(R.id.v_settings).setOnClickListener(view -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             SettingsPanelDialog settingsPanelDialog = new SettingsPanelDialog(mContext, mLiveManager, mLiveCoreView);
+            settingsPanelDialog.setOnDismissListener(dialog -> view.setEnabled(true));
             settingsPanelDialog.show();
         });
     }
@@ -373,6 +379,10 @@ public class AnchorView extends BasicView {
 
     private void initStartLiveView() {
         mButtonStartLive.setOnClickListener((View view) -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             RoomInfo roomInfo = new RoomInfo();
             roomInfo.roomId = mRoomState.roomId;
             roomInfo.name = mRoomState.roomName.get();
@@ -446,7 +456,12 @@ public class AnchorView extends BasicView {
 
     private void initCoGuestView() {
         mViewCoGuest.setOnClickListener((view) -> {
+            if (!view.isEnabled()) {
+                return;
+            }
+            view.setEnabled(false);
             AnchorCoGuestManageDialog dialog = new AnchorCoGuestManageDialog(mContext, mLiveManager, mLiveCoreView);
+            dialog.setOnDismissListener(dialog1 -> view.setEnabled(true));
             dialog.show();
         });
     }

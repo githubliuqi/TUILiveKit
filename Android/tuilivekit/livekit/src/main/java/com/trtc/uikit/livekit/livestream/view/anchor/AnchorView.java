@@ -33,9 +33,11 @@ import com.trtc.tuikit.common.livedata.Observer;
 import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.component.audiencelist.AudienceListView;
+import com.trtc.uikit.component.audioeffect.store.AudioEffectState;
 import com.trtc.uikit.component.barrage.BarrageInputView;
 import com.trtc.uikit.component.barrage.BarrageStreamView;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
+import com.trtc.uikit.component.common.StateCache;
 import com.trtc.uikit.component.gift.GiftPlayView;
 import com.trtc.uikit.component.gift.store.model.Gift;
 import com.trtc.uikit.component.gift.store.model.GiftUser;
@@ -81,6 +83,7 @@ import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @SuppressLint("ViewConstructor")
 public class AnchorView extends BasicView {
@@ -272,6 +275,7 @@ public class AnchorView extends BasicView {
         boolean isFrontCamera = mLiveCoreView.getMediaManager().mMediaState.isFrontCamera.get();
         mLiveCoreView.startCamera(isFrontCamera, null);
         mLiveCoreView.startMicrophone(null);
+        updateLocalAudioMuteState();
         if (mRoomBehavior == TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM) {
             mLayoutPushing.setVisibility(VISIBLE);
             mUserManager.initSelfUserData();
@@ -298,6 +302,16 @@ public class AnchorView extends BasicView {
                     }
                 }
             });
+        }
+    }
+
+    private void updateLocalAudioMuteState() {
+        Map<String, Object> map = StateCache.getInstance().get(mRoomState.roomId);
+        if (map != null) {
+            AudioEffectState audioEffectState = (AudioEffectState) map.get("key_state_audio_effect");
+            if (audioEffectState != null) {
+                mLiveCoreView.muteMicrophone(audioEffectState.muteLocalAudio.get());
+            }
         }
     }
 

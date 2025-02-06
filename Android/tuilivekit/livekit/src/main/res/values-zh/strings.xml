@@ -154,7 +154,7 @@
     <string name="livekit_common_this_live_data">本场直播数据</string>
     <string name="livekit_common_live_duration">直播时长</string>
     <string name="livekit_common_gift_income">礼物收入</string>
-    <string name="livekit_common_live_people_number">观看人数</string>
+    <string name="livekit_common_live_people_number">累计观看</string>
     <string name="livekit_common_message_count">消息数量</string>
     <string name="livekit_common_send_gift_people_count">送礼人数</string>
     <string name="livekit_common_like_count">点赞数量</string>

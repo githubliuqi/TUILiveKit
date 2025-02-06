@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
@@ -110,8 +111,25 @@ public class EndLiveStreamDialog extends PopupDialog {
     private void initEndLiveButton() {
         mTextEndLive.setText(getContext().getString(R.string.livekit_end_live));
         mTextEndLive.setOnClickListener(v -> {
+            if (!v.isEnabled()) {
+                return;
+            }
+            v.setEnabled(false);
+            mLiveStreamManager.getDashboardManager().getLiveInfo(new TUILiveListManager.LiveInfoCallback() {
+                @Override
+                public void onSuccess(TUILiveListManager.LiveInfo liveInfo) {
+                    mLiveStreamManager.getDashboardManager().updateMaxViewersCount(liveInfo.viewCount);
+                    stopLiveStream();
+                }
+
+                @Override
+                public void onError(TUICommonDefine.Error error, String s) {
+                    int maxAudienceCount = mLiveStreamManager.getRoomState().maxAudienceCount;
+                    mLiveStreamManager.getDashboardManager().updateMaxViewersCount(maxAudienceCount);
+                    stopLiveStream();
+                }
+            });
             dismiss();
-            endLiveRoom();
         });
     }
 
@@ -120,7 +138,7 @@ public class EndLiveStreamDialog extends PopupDialog {
         mTextCancel.setOnClickListener(v -> dismiss());
     }
 
-    private void endLiveRoom() {
+    private void stopLiveStream() {
         mLiveStream.stopLiveStream(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {

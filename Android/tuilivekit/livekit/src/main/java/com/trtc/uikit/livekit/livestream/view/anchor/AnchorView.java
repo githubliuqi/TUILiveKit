@@ -328,7 +328,6 @@ public class AnchorView extends BasicView {
     private void initDashboardStatus() {
         DashboardManager dashboardManager = mLiveManager.getDashboardManager();
         dashboardManager.updateDuration(System.currentTimeMillis() - mRoomState.createTime);
-        dashboardManager.updateMaxViewersCount(mRoomState.maxAudienceCount);
         dashboardManager.updateLikeNumber(mGiftPlayView.getLikeCount());
         dashboardManager.updateMessageCount(mBarrageStreamView.getBarrageCount());
         mLayoutPushing.removeAllViews();

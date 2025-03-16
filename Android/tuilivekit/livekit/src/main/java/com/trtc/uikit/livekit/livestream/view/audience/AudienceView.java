@@ -330,6 +330,7 @@ public class AudienceView extends BasicView {
         mGiftPlayView.setListener(new GiftPlayView.TUIGiftPlayViewListener() {
             @Override
             public void onReceiveGift(Gift gift, int giftCount, GiftUser sender, GiftUser receiver) {
+                mLiveManager.getDashboardManager().updateGiftCount(mDashboardState.giftCount + giftCount);
                 mLiveManager.getDashboardManager().updateGiftIncome(
                         gift.price * giftCount + mDashboardState.giftIncome);
                 mLiveManager.getDashboardManager().insertGiftPeople(sender.userId);

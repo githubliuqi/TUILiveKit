@@ -85,7 +85,7 @@ public class AnchorDashboardView extends BasicView {
 
     @SuppressLint("DefaultLocale")
     private void initGiftInfoView() {
-        mTextGiftIncome.setText(String.format("%d", mDashboardState.giftIncome));
+        mTextGiftIncome.setText(String.format("%d", mDashboardState.giftCount));
         mTextGiftCount.setText(String.format("%d", mDashboardState.giftPeopleSet.size()));
     }
 

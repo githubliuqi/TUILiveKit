@@ -27,6 +27,10 @@ public class DashboardManager extends BaseManager {
         mDashboardState.giftIncome = giftIncome;
     }
 
+    public void updateGiftCount(int giftCount) {
+        mDashboardState.giftCount = giftCount;
+    }
+
     public void insertGiftPeople(String userId) {
         mDashboardState.giftPeopleSet.add(userId);
     }

@@ -161,6 +161,7 @@
     <string name="livekit_common_this_live_data">Live data</string>
     <string name="livekit_common_live_duration">Duration</string>
     <string name="livekit_common_gift_income">Gift Income</string>
+    <string name="livekit_common_gift_count">Gift Count</string>
     <string name="livekit_common_live_people_number">Total Views</string>
     <string name="livekit_common_message_count">Messages</string>
     <string name="livekit_common_send_gift_people_count">Gift givers</string>

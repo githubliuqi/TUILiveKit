@@ -8,6 +8,7 @@ public class DashboardState {
     public long        maxViewersCount = 0;
     public int         messageCount    = 0;
     public int         giftIncome      = 0;
+    public int         giftCount      = 0;
     public Set<String> giftPeopleSet   = new HashSet<>();
     public int         likeCount       = 0;
 
@@ -16,6 +17,7 @@ public class DashboardState {
         maxViewersCount = 0;
         messageCount = 0;
         giftIncome = 0;
+        giftCount = 0;
         giftPeopleSet.clear();
         likeCount = 0;
     }

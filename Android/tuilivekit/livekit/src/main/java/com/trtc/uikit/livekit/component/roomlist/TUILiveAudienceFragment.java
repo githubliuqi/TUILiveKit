@@ -107,7 +107,7 @@ public class TUILiveAudienceFragment extends Fragment implements ITUINotificatio
 
         mViewPager2.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
         mViewPager2.setOffscreenPageLimit(1);
-        mViewPager2.setUserInputEnabled(true);
+        mViewPager2.setUserInputEnabled(false);
         mViewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrollStateChanged(int state) {

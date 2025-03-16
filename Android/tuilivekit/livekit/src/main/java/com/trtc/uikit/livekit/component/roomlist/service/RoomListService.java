@@ -2,11 +2,14 @@ package com.trtc.uikit.livekit.component.roomlist.service;
 
 import static com.tencent.cloud.tuikit.engine.common.TUICommonDefine.ExtensionType.LIVE_LIST_MANAGER;
 import android.text.TextUtils;
+import android.util.Log;
+
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfo;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfoListCallback;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveListManager.LiveInfoListResult;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.trtc.uikit.livekit.component.roomlist.store.RoomListState;
 
@@ -26,6 +29,14 @@ public class RoomListService {
     }
 
     public void fetchLiveList(boolean checkFirstExist) {
+        TUIRoomDefine.LoginUserInfo userInfo = TUIRoomEngine.getSelfInfo();
+        if (userInfo == null || TextUtils.isEmpty(userInfo.userId)) {
+            mRoomListState.mLiveList.set(mRoomListState.mLiveList.get());
+            mRoomListState.mLoadStatus.set(false);
+            mRoomListState.mRefreshStatus.set(false);
+            Log.w("RoomListService", "TUIRoomEngine login first");
+            return;
+        }
         if (!mRoomListState.mRefreshStatus.get()) {
             mRoomListState.mRefreshStatus.set(true);
         }

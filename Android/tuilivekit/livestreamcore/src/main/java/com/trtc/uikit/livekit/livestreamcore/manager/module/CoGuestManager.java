@@ -56,6 +56,7 @@ public class CoGuestManager extends BaseManager {
             public void onSuccess(List<TUIRoomDefine.SeatInfo> list) {
                 updateSelfSeatedState();
                 autoTakeSeatByOwner();
+                leaveSeatWhenEnterRoomByAudience();
             }
 
             @Override
@@ -302,6 +303,16 @@ public class CoGuestManager extends BaseManager {
         }
         if (mCoGuestState.coGuestStatus.get() != CoGuestStatus.LINKING) {
             applyToConnection(REQUEST_TIMEOUT, null);
+        }
+    }
+
+    private void leaveSeatWhenEnterRoomByAudience() {
+        if (mUserState.selfInfo.userRole == TUIRoomDefine.Role.ROOM_OWNER) {
+            return;
+        }
+        if (mCoGuestState.coGuestStatus.get() == CoGuestStatus.LINKING) {
+            Logger.info(TAG + "audience enter room, leave seat at first");
+            disconnectBySelf();
         }
     }
 

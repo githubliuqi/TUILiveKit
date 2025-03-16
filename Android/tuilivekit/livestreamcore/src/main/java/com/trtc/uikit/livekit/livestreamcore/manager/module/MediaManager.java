@@ -196,6 +196,84 @@ public class MediaManager extends BaseManager {
         mMediaState.isFrontCamera.set(!isFrontCamera);
     }
 
+    public void requestPermissions(boolean openCamera, TUIRoomDefine.ActionCallback callback) {
+        if (mMediaState.hasMicrophonePermission.get()) {
+            if (openCamera) {
+                if (mMediaState.hasCameraPermission.get()) {
+                    if (callback != null) {
+                        callback.onSuccess();
+                    }
+                } else {
+                    requestPermissions(callback);
+                }
+            } else {
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+        } else {
+            if (openCamera) {
+                requestPermissions(callback);
+            } else {
+                requestMicrophonePermissions(callback);
+            }
+        }
+    }
+
+    private void requestMicrophonePermissions(TUIRoomDefine.ActionCallback callback) {
+        Logger.info(TAG + " requestMicrophonePermissions:[]");
+        PermissionRequest.requestMicrophonePermissions(TUIConfig.getAppContext(), new PermissionCallback() {
+            @Override
+            public void onRequesting() {
+                Logger.info(TAG + " requestMicrophonePermissions:[onRequesting}");
+            }
+
+            @Override
+            public void onGranted() {
+                Logger.info(TAG + " requestMicrophonePermissions:[onGranted]");
+                mVideoLiveState.mediaState.hasMicrophonePermission.set(true);
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onDenied() {
+                Logger.warn(TAG + " requestMicrophonePermissions:[onDenied]");
+                if (callback != null) {
+                    callback.onError(TUICommonDefine.Error.MICROPHONE_NOT_AUTHORIZED, "requestMicrophonePermissions:[onDenied]");
+                }
+            }
+        });
+    }
+
+    private void requestPermissions(TUIRoomDefine.ActionCallback callback) {
+        Logger.info(TAG + " requestPermissions:[]");
+        PermissionRequest.requestPermissions(TUIConfig.getAppContext(), new PermissionCallback() {
+            @Override
+            public void onRequesting() {
+                Logger.info(TAG + " requestPermissions:[onRequesting]");
+            }
+
+            @Override
+            public void onGranted() {
+                Logger.info(TAG + " requestPermissions:[onGranted]");
+                mVideoLiveState.mediaState.hasCameraPermission.set(true);
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onDenied() {
+                Logger.error(TAG + " requestPermissions:[onDenied]");
+                if (callback != null) {
+                    callback.onError(TUICommonDefine.Error.CAMERA_NOT_AUTHORIZED, "requestPermissions:[onDenied]");
+                }
+            }
+        });
+    }
+
     private void initVideoAdvanceSettings() {
         enableUltimate(true);
         enableH265(true);

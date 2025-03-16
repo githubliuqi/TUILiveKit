@@ -210,11 +210,23 @@ public class LiveCoreView extends FrameLayout {
         if (checkRequestIntraRoomConnection(userId, callback)) {
             return;
         }
-        if (TextUtils.isEmpty(userId) || userId.equals(mRoomState.ownerInfo.userId)) {
-            applyToConnection(timeout, callback);
-        } else {
-            inviteGuestToConnection(userId, timeout, callback);
-        }
+        mVideoLiveManager.getMediaManager().requestPermissions(openCamera, new ActionCallback() {
+            @Override
+            public void onSuccess() {
+                if (TextUtils.isEmpty(userId) || userId.equals(mRoomState.ownerInfo.userId)) {
+                    applyToConnection(timeout, callback);
+                } else {
+                    inviteGuestToConnection(userId, timeout, callback);
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                if (callback != null) {
+                    callback.onError(error, message);
+                }
+            }
+        });
     }
 
     public void cancelIntraRoomConnection(String userId, ActionCallback callback) {

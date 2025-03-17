@@ -65,8 +65,8 @@ public class CoGuestWidgetsView extends BasicView {
         LayoutInflater.from(mContext).inflate(R.layout.livekit_co_guest_widgets_view, this, true);
         mImageAvatar = findViewById(R.id.iv_avatar);
         mLayoutUserInfo = findViewById(R.id.ll_user_info);
-        mTextName = findViewById(R.id.tv_name);
         mImageMuteAudio = findViewById(R.id.iv_mute_audio);
+        mTextName = findViewById(R.id.tv_name);
     }
 
     @Override

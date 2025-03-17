@@ -144,17 +144,7 @@ public class AnchorView extends BasicView {
     }
 
     public void destroy() {
-        mLiveCoreView.stopLiveStream(new TUIRoomDefine.ActionCallback() {
-            @Override
-            public void onSuccess() {
-                mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.DASHBOARD);
-            }
-
-            @Override
-            public void onError(TUICommonDefine.Error error, String message) {
-                ErrorHandler.onError(error);
-            }
-        });
+        showLiveStreamEndDialog();
     }
 
     @Override

@@ -460,7 +460,7 @@ public class CoGuestManager extends BaseManager {
         initSeatList(seatList);
         for (TUIRoomDefine.SeatInfo seatInfo : seatedList) {
             if (isSelfSeatInfo(seatInfo)) {
-                mCoGuestState.coGuestStatus.set(CoGuestStatus.LINKING, false);
+                mCoGuestState.coGuestStatus.set(CoGuestStatus.LINKING, true);
             }
         }
 

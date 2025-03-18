@@ -35,6 +35,7 @@ import java.util.List;
 public class BarrageStreamView extends FrameLayout implements IBarrageDisplayView {
     private static final String TAG                             = "BarrageStreamView";
     private static final int    BARRAGE_LIST_UPDATE_DURATION_MS = 250;
+    private static final int    SMOOTH_SCROLL_COUNT_MAX         = 100;
 
     private final Context               mContext;
     private       TextView              mTextNotice;
@@ -46,6 +47,7 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
     private       long                  mTimestampOnLastUpdate = 0;
     private       BarrageState          mBarrageState;
 
+    private       boolean                 mSmoothScroll        = true;
     private final Runnable                mUpdateViewTask      = this::notifyDataSetChanged;
     private final Observer<List<Barrage>> mBarrageListObserver = this::onBarrageListChanged;
 
@@ -137,6 +139,7 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
         if (mMsgList == null) {
             return;
         }
+        mSmoothScroll = barrages.size() - mMsgList.size() < SMOOTH_SCROLL_COUNT_MAX;
         mMsgList.clear();
         mMsgList.addAll(barrages);
         removeCallbacks(mUpdateViewTask);
@@ -155,7 +158,12 @@ public class BarrageStreamView extends FrameLayout implements IBarrageDisplayVie
     private void notifyDataSetChanged() {
         mTimestampOnLastUpdate = System.currentTimeMillis();
         mAdapter.notifyDataSetChanged();
-        mRecyclerMsg.smoothScrollToPosition(mAdapter.getItemCount());
+        int targetPosition = Math.max(0, mAdapter.getItemCount() - 1);
+        if (mSmoothScroll) {
+            mRecyclerMsg.smoothScrollToPosition(targetPosition);
+        } else {
+            mRecyclerMsg.scrollToPosition(targetPosition);
+        }
     }
 
     private void reportData() {

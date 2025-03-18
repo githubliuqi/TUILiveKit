@@ -34,7 +34,7 @@ public class BarrageIMService {
         if (TextUtils.isEmpty(barrage.content)) {
             return;
         }
-        V2TIMManager.getInstance().sendGroupTextMessage(barrage.content, roomId, V2TIMMessage.V2TIM_PRIORITY_HIGH,
+        V2TIMManager.getInstance().sendGroupTextMessage(barrage.content, roomId, V2TIMMessage.V2TIM_PRIORITY_LOW,
                 new V2TIMValueCallback<V2TIMMessage>() {
                     @Override
                     public void onSuccess(V2TIMMessage v2TIMMessage) {

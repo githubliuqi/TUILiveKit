@@ -89,7 +89,7 @@ public class LikeIMService {
         String data = getCusLikeMsgJsonStr();
         Log.i(TAG, " send like: " + data);
         V2TIMManager.getInstance().sendGroupCustomMessage(
-                data.getBytes(), roomId, V2TIMMessage.V2TIM_PRIORITY_NORMAL, null);
+                data.getBytes(), roomId, V2TIMMessage.V2TIM_PRIORITY_LOW, null);
     }
 
     private static String getCusLikeMsgJsonStr() {

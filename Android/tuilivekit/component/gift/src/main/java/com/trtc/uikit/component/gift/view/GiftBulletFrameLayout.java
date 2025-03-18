@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,6 +110,10 @@ public class GiftBulletFrameLayout extends FrameLayout implements Handler.Callba
     }
 
     private void initLayoutState() {
+        if (!isAttachedToWindow()) {
+            Log.w("GiftBulletFrameLayout", "initLayoutState: isAttachedToWindow is false");
+            return;
+        }
         if (mGift != null) {
             ImageLoader.loadImage(mContext, mImageGiftIcon, mGift.imageUrl, R.drawable.livekit_gift_ic_avatar);
         }

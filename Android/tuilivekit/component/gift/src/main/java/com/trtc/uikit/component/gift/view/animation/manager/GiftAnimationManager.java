@@ -4,8 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.trtc.uikit.component.gift.store.model.Gift;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +14,8 @@ public class GiftAnimationManager {
     private static final int MAX_CACHE_SIZE               = 3;
     private static final int ANIMATION_PREPARE_TIMEOUT_MS = 2000;
 
-    private final Handler         mMainHandler     = new Handler(Looper.getMainLooper());
-    private final List<GiftModel> mGiftPrepareList = new ArrayList<>();
+    private final Handler                  mMainHandler     = new Handler(Looper.getMainLooper());
+    private final List<GiftAnimationModel> mGiftPrepareList = new ArrayList<>();
 
     private AnimationPlayer mAnimationPlayer;
     private boolean         mIsPlaying;
@@ -35,7 +33,7 @@ public class GiftAnimationManager {
         mAnimationPlayer.setCallback(this::onFinished);
     }
 
-    public void add(GiftModel gift) {
+    public void add(GiftAnimationModel gift) {
         if (gift.isFromSelf) {
             if (mGiftPrepareList.isEmpty()) {
                 mGiftPrepareList.add(gift);
@@ -43,7 +41,7 @@ public class GiftAnimationManager {
                 // Add after the last gift which is from self.
                 int lastIndex = 0;
                 for (int i = mGiftPrepareList.size() - 1; i > 0; i--) {
-                    GiftModel giftModel = mGiftPrepareList.get(i);
+                    GiftAnimationModel giftModel = mGiftPrepareList.get(i);
                     if (giftModel.isFromSelf) {
                         lastIndex = i;
                         break;
@@ -58,7 +56,7 @@ public class GiftAnimationManager {
         if (mGiftPrepareList.size() == MAX_CACHE_SIZE + 1) {
             int removeIndex = 1;
             for (int i = 1; i < mGiftPrepareList.size(); i++) {
-                GiftModel giftModel = mGiftPrepareList.get(i);
+                GiftAnimationModel giftModel = mGiftPrepareList.get(i);
                 if (!giftModel.isFromSelf) {
                     removeIndex = i;
                     break;
@@ -67,15 +65,15 @@ public class GiftAnimationManager {
             mGiftPrepareList.remove(removeIndex);
         }
         if (mGiftPrepareList.size() == 1 && !mIsPlaying) {
-            preparePlay(mGiftPrepareList.remove(0).gift);
+            preparePlay(mGiftPrepareList.remove(0));
         }
     }
 
-    public void startPlay(String animationUrl) {
-        Log.i(TAG, "startPlay:" + animationUrl);
+    public void startPlay(GiftAnimationModel model) {
+        Log.i(TAG, "startPlay:" + model.gift.animationUrl);
         mMainHandler.removeCallbacks(mPrepareTimeoutTask);
         if (mAnimationPlayer != null) {
-            mAnimationPlayer.startPlay(animationUrl);
+            mAnimationPlayer.startPlay(model);
         }
     }
 
@@ -86,11 +84,11 @@ public class GiftAnimationManager {
         }
     }
 
-    private void preparePlay(Gift gift) {
-        Log.i(TAG, "preparePlay:" + gift.animationUrl);
+    private void preparePlay(GiftAnimationModel giftModel) {
+        Log.i(TAG, "preparePlay:" + giftModel.gift.animationUrl);
         mIsPlaying = true;
         if (mAnimationPlayer != null) {
-            mAnimationPlayer.preparePlay(gift);
+            mAnimationPlayer.preparePlay(giftModel);
         }
         mMainHandler.postDelayed(mPrepareTimeoutTask, ANIMATION_PREPARE_TIMEOUT_MS);
     }
@@ -99,12 +97,7 @@ public class GiftAnimationManager {
         Log.i(TAG, "onFinished:" + error);
         mIsPlaying = false;
         if (!mGiftPrepareList.isEmpty()) {
-            preparePlay(mGiftPrepareList.remove(0).gift);
+            preparePlay(mGiftPrepareList.remove(0));
         }
-    }
-
-    public static final class GiftModel {
-        public Gift    gift;
-        public boolean isFromSelf = false;
     }
 }

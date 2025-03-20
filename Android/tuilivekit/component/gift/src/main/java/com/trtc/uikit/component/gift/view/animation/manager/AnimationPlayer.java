@@ -1,11 +1,9 @@
 package com.trtc.uikit.component.gift.view.animation.manager;
 
-import com.trtc.uikit.component.gift.store.model.Gift;
-
 public abstract class AnimationPlayer {
-    public abstract void preparePlay(Gift gift);
+    public abstract void preparePlay(GiftAnimationModel model);
 
-    public abstract void startPlay(String url);
+    public abstract void startPlay(GiftAnimationModel model);
 
     public abstract void stopPlay();
 

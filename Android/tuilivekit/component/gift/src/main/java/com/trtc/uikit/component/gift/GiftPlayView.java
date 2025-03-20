@@ -6,10 +6,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.trtc.tuikit.common.livedata.Observer;
@@ -19,10 +16,11 @@ import com.trtc.uikit.component.gift.store.GiftStore;
 import com.trtc.uikit.component.gift.store.LikeState;
 import com.trtc.uikit.component.gift.store.model.Gift;
 import com.trtc.uikit.component.gift.store.model.GiftUser;
-import com.trtc.uikit.component.gift.view.GiftBulletFrameLayout;
 import com.trtc.uikit.component.gift.view.animation.AnimationView;
+import com.trtc.uikit.component.gift.view.animation.ImageAnimationView;
 import com.trtc.uikit.component.gift.view.animation.manager.AnimationPlayer;
 import com.trtc.uikit.component.gift.view.animation.manager.GiftAnimationManager;
+import com.trtc.uikit.component.gift.view.animation.manager.GiftAnimationModel;
 import com.trtc.uikit.component.gift.view.like.GiftHeartLayout;
 
 import java.util.List;
@@ -31,11 +29,10 @@ import java.util.List;
 public class GiftPlayView extends FrameLayout {
 
     private static final String TAG                       = "GiftPlayView";
-    private static final int    MAX_SHOW_GIFT_BULLET_SIZE = 3;
 
     private final Context                      mContext;
-    private       LinearLayout                 mGiftBulletGroup;
     private       String                       mRoomId;
+    private       ImageAnimationView           mImageAnimationView;
     private       AnimationView                mAnimationView;
     private       GiftHeartLayout              mHeartLayout;
     private       TUIGiftPlayViewListener      mGiftPlayViewListener;
@@ -44,7 +41,8 @@ public class GiftPlayView extends FrameLayout {
     private       GiftState                    mGiftState;
     private       LikeState                    mLikeState;
 
-    private final GiftAnimationManager mGiftAnimationManager = new GiftAnimationManager();
+    private final GiftAnimationManager mGiftAnimationManager      = new GiftAnimationManager();
+    private final GiftAnimationManager mGiftImageAnimationManager = new GiftAnimationManager();
 
     public GiftPlayView(Context context) {
         this(context, null);
@@ -64,7 +62,8 @@ public class GiftPlayView extends FrameLayout {
     public void init(String roomId) {
         this.mRoomId = roomId;
         this.mAnimationView.setRoomId(mRoomId);
-        initPlayer();
+        initAnimationPlayer();
+        initImageAnimationPlayer();
         initLikeState();
         if (isAttachedToWindow()) {
             initGiftState();
@@ -72,7 +71,7 @@ public class GiftPlayView extends FrameLayout {
     }
 
     private void initView() {
-        mGiftBulletGroup = findViewById(R.id.gift_bullet_group);
+        mImageAnimationView = findViewById(R.id.gift_image_anim_view);
         mAnimationView = findViewById(R.id.gift_anim_view);
         mHeartLayout = findViewById(R.id.heart_layout);
     }
@@ -93,21 +92,22 @@ public class GiftPlayView extends FrameLayout {
         mLikeState.mLikeAnimationTrigger.observe(mLikeObserver);
     }
 
-    private void initPlayer() {
+    private void initAnimationPlayer() {
         AnimationPlayer animationPlayer = new AnimationPlayer() {
             @Override
-            public void preparePlay(Gift gift) {
-                if (!isAttachedToWindow()) {
-                    return;
-                }
-                if (mGiftPlayViewListener != null) {
-                    mGiftPlayViewListener.onPlayGiftAnimation(GiftPlayView.this, gift);
+            public void preparePlay(GiftAnimationModel model) {
+                if (isAttachedToWindow()) {
+                    if (mGiftPlayViewListener != null) {
+                        mGiftPlayViewListener.onPlayGiftAnimation(GiftPlayView.this, model.gift);
+                    }
                 }
             }
 
             @Override
-            public void startPlay(String url) {
-                mAnimationView.playAnimation(url);
+            public void startPlay(GiftAnimationModel model) {
+                if (isAttachedToWindow()) {
+                    mAnimationView.playAnimation(model.gift.animationUrl);
+                }
             }
 
             @Override
@@ -122,6 +122,43 @@ public class GiftPlayView extends FrameLayout {
         };
         mGiftAnimationManager.setPlayer(animationPlayer);
     }
+
+    private void initImageAnimationPlayer() {
+        AnimationPlayer imageAnimationPlayer = new AnimationPlayer() {
+
+            @Override
+            public void preparePlay(GiftAnimationModel model) {
+                if (isAttachedToWindow()) {
+                    mGiftImageAnimationManager.startPlay(model);
+                }
+            }
+
+            @Override
+            public void startPlay(GiftAnimationModel model) {
+                if (isAttachedToWindow()) {
+                    ImageAnimationView.GiftImageAnimationInfo info = new ImageAnimationView.GiftImageAnimationInfo();
+                    info.giftImageUrl = model.gift.imageUrl;
+                    info.giftName = model.gift.giftName;
+                    info.giftCount = model.giftCount;
+                    info.senderName = model.sender.userName;
+                    info.senderAvatarUrl = model.sender.avatarUrl;
+                    mImageAnimationView.playAnimation(info);
+                }
+            }
+
+            @Override
+            public void stopPlay() {
+                mImageAnimationView.stopPlay();
+            }
+
+            @Override
+            public void setCallback(PlayCallback callback) {
+                mImageAnimationView.setCallback(callback::onFinished);
+            }
+        };
+        mGiftImageAnimationManager.setPlayer(imageAnimationPlayer);
+    }
+
 
     @Override
     protected void onAttachedToWindow() {
@@ -138,6 +175,7 @@ public class GiftPlayView extends FrameLayout {
             mLikeState.mLikeAnimationTrigger.removeObserver(mLikeObserver);
         }
         mGiftAnimationManager.stopPlay();
+        mGiftImageAnimationManager.stopPlay();
         super.onDetachedFromWindow();
     }
 
@@ -146,7 +184,10 @@ public class GiftPlayView extends FrameLayout {
     }
 
     public void playGiftAnimation(String playUrl) {
-        post(() -> mGiftAnimationManager.startPlay(playUrl));
+        GiftAnimationModel model = new GiftAnimationModel();
+        model.gift = new Gift();
+        model.gift.animationUrl = playUrl;
+        post(() -> mGiftAnimationManager.startPlay(model));
     }
 
     public void setListener(TUIGiftPlayViewListener listener) {
@@ -183,35 +224,18 @@ public class GiftPlayView extends FrameLayout {
         if (receiver != null && TextUtils.equals(receiver.userId, TUILogin.getUserId())) {
             receiver.userName = mContext.getString(R.string.livekit_gift_me);
         }
+        GiftAnimationModel giftModel = new GiftAnimationModel();
+        giftModel.gift = gift;
+        giftModel.giftCount = giftCount;
+        giftModel.sender = sender;
+        giftModel.isFromSelf = sender != null && TextUtils.equals(sender.userId, TUILogin.getUserId());
         if (TextUtils.isEmpty(gift.animationUrl)) {
-            showGiftBullet(gift, sender, receiver, giftCount);
+            mGiftImageAnimationManager.add(giftModel);
         } else {
-            GiftAnimationManager.GiftModel giftModel = new GiftAnimationManager.GiftModel();
-            giftModel.gift = gift;
-            giftModel.isFromSelf = sender != null && TextUtils.equals(sender.userId, TUILogin.getUserId());
             mGiftAnimationManager.add(giftModel);
         }
         if (mGiftPlayViewListener != null) {
             mGiftPlayViewListener.onReceiveGift(gift, giftCount, sender, receiver);
-        }
-    }
-
-    private void showGiftBullet(Gift model, GiftUser sender, GiftUser receiver, int giftCount) {
-        if (mGiftBulletGroup.getChildCount() >= MAX_SHOW_GIFT_BULLET_SIZE) {
-            //If there are more than 3 gifts, the first gift barrage will be removed from the interface
-            View firstShowBulletView = mGiftBulletGroup.getChildAt(0);
-            if (firstShowBulletView != null) {
-                GiftBulletFrameLayout bulletView = (GiftBulletFrameLayout) firstShowBulletView;
-                bulletView.clearHandler();
-                mGiftBulletGroup.removeView(bulletView);
-            }
-        }
-        GiftBulletFrameLayout giftFrameLayout = new GiftBulletFrameLayout(mContext);
-        mGiftBulletGroup.addView(giftFrameLayout);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mGiftBulletGroup.getLayoutParams();
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        if (giftFrameLayout.setGift(model, giftCount, sender, receiver)) {
-            giftFrameLayout.startAnimation();
         }
     }
 

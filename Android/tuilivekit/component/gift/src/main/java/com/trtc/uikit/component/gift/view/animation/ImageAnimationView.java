@@ -37,7 +37,8 @@ public class ImageAnimationView extends LinearLayout {
 
     public void playAnimation(GiftImageAnimationInfo model) {
         if (isAttachedToWindow()) {
-            for (GiftBulletFrameLayout bullet : mChildViews) {
+            for (int i = mChildViews.length - 1; i >= 0; i--) {
+                GiftBulletFrameLayout bullet = mChildViews[i];
                 if (bullet.getVisibility() == INVISIBLE) {
                     bullet.setGiftInfo(model);
                     bullet.startAnimation();

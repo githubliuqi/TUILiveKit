@@ -1019,6 +1019,7 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private void stopLive(ActionCallback callback) {
+        mVideoLiveManager.removeObserver();
         mVideoLiveManager.getRoomManager().stopLive(new ActionCallback() {
             @Override
             public void onSuccess() {
@@ -1061,6 +1062,7 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private void leaveLive(ActionCallback callback) {
+        mVideoLiveManager.removeObserver();
         mVideoLiveManager.getRoomManager().leaveLive(new ActionCallback() {
             @Override
             public void onSuccess() {

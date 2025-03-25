@@ -64,16 +64,7 @@ public class LiveStreamManager {
     }
 
     public void destroy() {
-        destroyWithoutLiveService();
-        mLiveService.destroy();
-    }
-
-    public void destroyWithoutLiveService() {
-        mLiveService.removeRoomEngineObserver(mRoomEngineObserver);
-        mLiveService.removeLiveConnectionManagerObserver(mliveConnectionManagerObserver);
-        mLiveService.removeLiveBattleManagerObserver(mLiveBattleManagerObserver);
-        mLiveService.removeLiveLayoutManagerObserver(mLiveLayoutManagerObserver);
-        V2TIMManager.getInstance().removeIMSDKListener(mIMObserver);
+        removeObserver();
         mRoomManager.destroy();
         mCoGuestManager.destroy();
         mUserManager.destroy();
@@ -81,6 +72,14 @@ public class LiveStreamManager {
         mCoHostManager.destroy();
         mBattleManager.destroy();
         mViewManager.destroy();
+    }
+
+    public void removeObserver() {
+        mLiveService.removeRoomEngineObserver(mRoomEngineObserver);
+        mLiveService.removeLiveConnectionManagerObserver(mliveConnectionManagerObserver);
+        mLiveService.removeLiveBattleManagerObserver(mLiveBattleManagerObserver);
+        mLiveService.removeLiveLayoutManagerObserver(mLiveLayoutManagerObserver);
+        V2TIMManager.getInstance().removeIMSDKListener(mIMObserver);
     }
 
     public RoomManager getRoomManager() {

@@ -9,6 +9,7 @@ import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
+import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.trtc.uikit.component.barrage.store.BarrageState;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
@@ -29,7 +30,7 @@ public class BarrageIMService {
         mMaxBarrageCount = count > 0 ? count : mMaxBarrageCount;
     }
 
-    public void sendBarrage(String roomId, Barrage barrage) {
+    public void sendBarrage(String roomId, Barrage barrage, TUICallback callback) {
         Log.i(TAG, "sendBarrage:" + new Gson().toJson(barrage));
         if (TextUtils.isEmpty(barrage.content)) {
             return;
@@ -39,12 +40,18 @@ public class BarrageIMService {
                     @Override
                     public void onSuccess(V2TIMMessage v2TIMMessage) {
                         Log.i(TAG, "sendGroupTextMessage success");
+                        if (callback != null) {
+                            callback.onSuccess();
+                        }
                         insertBarrages(roomId, barrage);
                     }
 
                     @Override
                     public void onError(int i, String s) {
                         Log.i(TAG, "sendGroupTextMessage error " + i + " errorMessage:" + s);
+                        if (callback != null) {
+                            callback.onError(i, s);
+                        }
                     }
                 });
     }

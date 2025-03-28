@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.tencent.qcloud.tuicore.util.SPUtils;
 import com.tencent.qcloud.tuicore.util.ScreenUtil;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
@@ -146,7 +147,18 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
             ToastUtil.toastLongMessage(mContext.getString(R.string.livekit_barrage_warning_not_empty));
         } else {
             Barrage barrage = createBarrageModel(message);
-            sendBarrage(barrage);
+            sendBarrage(barrage, new TUICallback() {
+                @Override
+                public void onSuccess() {
+                    mEditText.setText("");
+                }
+
+                @Override
+                public void onError(int errorCode, String errorMessage) {
+                    String info = "error:" + errorCode + " " + errorMessage;
+                    ToastUtil.toastShortMessage(info);
+                }
+            });
             dismiss();
         }
     }
@@ -186,7 +198,6 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
         layoutParams.height = 0;
         mBottomPlaceholder.setLayoutParams(layoutParams);
         mInputMethodManager.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
-        mEditText.setText("");
         if (mOnGlobalLayoutListener != null) {
             mOnGlobalLayoutListener.clear();
         }
@@ -240,14 +251,14 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
     }
 
     @Override
-    public void sendBarrage(Barrage barrage) {
+    public void sendBarrage(Barrage barrage, TUICallback callback) {
         if (barrage == null) {
             return;
         }
         if (mOnSendListener != null) {
             mOnSendListener.willSendBarrage(barrage);
         }
-        BarrageStore.sharedInstance().mBarrageIMService.sendBarrage(mRoomID, barrage);
+        BarrageStore.sharedInstance().mBarrageIMService.sendBarrage(mRoomID, barrage, callback);
     }
 
     private Barrage createBarrageModel(String message) {

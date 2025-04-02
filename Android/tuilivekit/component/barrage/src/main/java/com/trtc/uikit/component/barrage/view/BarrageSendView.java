@@ -26,6 +26,7 @@ import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.uikit.component.barrage.BarrageInputView;
 import com.trtc.uikit.component.barrage.R;
 import com.trtc.uikit.component.barrage.service.BarrageConstants;
+import com.trtc.uikit.component.barrage.service.ErrorLocalized;
 import com.trtc.uikit.component.barrage.service.IEmojiResource;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
@@ -155,8 +156,7 @@ public class BarrageSendView extends Dialog implements IBarrageSendView, OnDecor
 
                 @Override
                 public void onError(int errorCode, String errorMessage) {
-                    String info = "error:" + errorCode + " " + errorMessage;
-                    ToastUtil.toastShortMessage(info);
+                    ErrorLocalized.onError(errorCode);
                 }
             });
             dismiss();

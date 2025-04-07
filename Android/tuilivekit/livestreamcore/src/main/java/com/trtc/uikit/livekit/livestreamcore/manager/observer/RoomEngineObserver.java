@@ -95,6 +95,7 @@ public class RoomEngineObserver extends TUIRoomObserver {
     @Override
     public void onKickedOffLine(String message) {
         Logger.info(mTag + " onKickedOffLine:[message:" + message + "]");
+        mVideoLiveManager.removeObserver();
     }
 
     @Override

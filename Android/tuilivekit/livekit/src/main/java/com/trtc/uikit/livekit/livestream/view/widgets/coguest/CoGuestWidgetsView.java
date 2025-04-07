@@ -106,6 +106,10 @@ public class CoGuestWidgetsView extends BasicView {
         }
     }
 
+    private boolean isAnchor() {
+        return TextUtils.equals(mState.userId, mRoomState.ownerInfo.userId);
+    }
+
     private void initUserAvatarView() {
         String userId = mState.userId;
         if (TextUtils.isEmpty(userId)) {
@@ -113,7 +117,7 @@ public class CoGuestWidgetsView extends BasicView {
         }
         boolean hasVideoStream = mUserState.hasVideoStreamUserList.get().contains(userId);
         boolean isPreview = RoomState.LiveStatus.PREVIEWING == mRoomState.liveStatus.get();
-        if (isPreview || hasVideoStream || mState.hasVideoStream) {
+        if (isAnchor() || isPreview || hasVideoStream || mState.hasVideoStream) {
             mImageAvatar.setVisibility(GONE);
         } else {
             mImageAvatar.setVisibility(VISIBLE);

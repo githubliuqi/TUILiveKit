@@ -4,11 +4,16 @@ import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
+import com.tencent.imsdk.v2.V2TIMManager;
+import com.tencent.imsdk.v2.V2TIMUserFullInfo;
+import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.trtc.uikit.component.audiencelist.store.AudienceListState;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class AudienceListObserver extends TUIRoomObserver {
     protected AudienceListState mAudienceListState;
@@ -39,7 +44,42 @@ public class AudienceListObserver extends TUIRoomObserver {
         audienceUser.userName = userInfo.userName;
         audienceUser.avatarUrl = userInfo.avatarUrl;
         audienceUser.userRole = userInfo.userRole;
-        mAudienceListState.audienceList.add(audienceUser);
+
+        List<String> ids = new ArrayList<>();
+        ids.add(userInfo.userId);
+        V2TIMManager.getInstance().getUsersInfo(ids, new V2TIMValueCallback<List<V2TIMUserFullInfo>>() {
+            @Override
+            public void onSuccess(List<V2TIMUserFullInfo> v2TIMUserFullInfos) {
+                for (V2TIMUserFullInfo fullInfo : v2TIMUserFullInfos) {
+                    if (Objects.equals(userInfo.userId, fullInfo.getUserID())) {
+                        audienceUser.nameCard = String.valueOf(fullInfo.getLevel());
+                        break;
+                    }
+                }
+                addUser(audienceUser);
+            }
+
+            @Override
+            public void onError(int code, String desc) {
+                addUser(audienceUser);
+            }
+
+            private void addUser(TUIRoomDefine.UserInfo user) {
+                TUIRoomDefine.UserInfo oldUser = null;
+                LinkedHashSet<TUIRoomDefine.UserInfo> audienceList = mAudienceListState.audienceList.get();
+                for (TUIRoomDefine.UserInfo item : audienceList) {
+                    if (TextUtils.equals(item.userId, user.userId)) {
+                        oldUser = item;
+                        break;
+                    }
+                }
+                if (oldUser != null) {
+                    audienceList.remove(oldUser);
+                }
+                audienceList.add(user);
+                mAudienceListState.audienceList.set(audienceList);
+            }
+        });
     }
 
     @Override

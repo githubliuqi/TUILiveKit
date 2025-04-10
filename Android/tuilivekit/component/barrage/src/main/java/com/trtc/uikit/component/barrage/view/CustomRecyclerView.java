@@ -12,6 +12,7 @@ public class CustomRecyclerView extends RecyclerView {
 
     private final GestureDetector mGestureDetector;
     boolean mIsLongPressed = false;
+    boolean mInTouch       = false;
 
     public CustomRecyclerView(Context context) {
         this(context, null);
@@ -26,7 +27,9 @@ public class CustomRecyclerView extends RecyclerView {
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public void onLongPress(@NonNull MotionEvent e) {
-                mIsLongPressed = true;
+                if (mInTouch) {
+                    mIsLongPressed = true;
+                }
             }
         });
     }
@@ -37,14 +40,26 @@ public class CustomRecyclerView extends RecyclerView {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (mIsLongPressed) {
-            int action = event.getAction();
-            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-                mIsLongPressed = false;
-            }
+        updateLongPressedState(event);
+        handleInterceptTouchEvent();
+        return super.dispatchTouchEvent(event);
+    }
+
+    private void updateLongPressedState(MotionEvent event) {
+        int action = event.getAction();
+        if (action == MotionEvent.ACTION_DOWN) {
+            mInTouch = true;
+        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+            mInTouch = false;
+            mIsLongPressed = false;
+        }
+    }
+
+    private void handleInterceptTouchEvent() {
+        if (!canScrollVertically(-1) && !canScrollVertically(1)) {
+            return;
         }
         getParent().requestDisallowInterceptTouchEvent(true);
-        return super.dispatchTouchEvent(event);
     }
 
     @Override

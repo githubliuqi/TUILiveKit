@@ -1,5 +1,7 @@
 package com.trtc.uikit.component.audiencelist.service;
 
+import static com.trtc.uikit.component.audiencelist.store.AudienceListState.AUDIENCE_COUNT_CACHE_SIZE;
+
 import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
@@ -24,9 +26,21 @@ public class AudienceListObserver extends TUIRoomObserver {
 
     @Override
     public void onRoomUserCountChanged(String roomId, int userCount) {
-        if (userCount > 0) {
-            mAudienceListState.audienceCount.set(userCount - 1);
+        if (userCount <= 0) {
+            return;
         }
+        List<Integer> cacheList = mAudienceListState.lastAudienceCountCache;
+        if (cacheList.size() == AUDIENCE_COUNT_CACHE_SIZE) {
+            cacheList.remove(0);
+        }
+        cacheList.add(userCount);
+        int sum = 0;
+        for (Integer item : cacheList) {
+            sum += item;
+        }
+        int averageCount = sum / cacheList.size() - 1;
+        averageCount = Math.max(averageCount, 0);
+        mAudienceListState.audienceCount.set(averageCount);
     }
 
     @Override

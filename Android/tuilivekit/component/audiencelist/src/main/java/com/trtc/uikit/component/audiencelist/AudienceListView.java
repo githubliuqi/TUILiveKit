@@ -161,7 +161,7 @@ public class AudienceListView extends FrameLayout {
     }
 
     private void onAudienceCountChange(int userCount) {
-        setUserCount(userCount);
+        updateAudienceCount();
     }
 
     private void onAudienceListChange(LinkedHashSet<TUIRoomDefine.UserInfo> userInfo) {
@@ -172,16 +172,23 @@ public class AudienceListView extends FrameLayout {
             params.width = ScreenUtil.dip2px(78);
         }
         mAdapter.updateData();
-        setUserCount(mAudienceListState.audienceCount.get());
+        updateAudienceCount();
+    }
+
+    private void updateAudienceCount() {
+        int userCount = mAudienceListState.audienceCount.get();
+        int listSize = mAudienceListState.audienceList.get().size();
+        if (userCount > ROOM_MAX_SHOW_USER_COUNT) {
+            setUserCount(userCount);
+        } else {
+            setUserCount(listSize);
+        }
     }
 
     @SuppressLint("SetTextI18n")
     private void setUserCount(int count) {
-        if (mAudienceListState.audienceList.get().size() > ROOM_MAX_SHOW_USER_COUNT) {
-            mTextAudienceCount.setText("" + count);
-        } else {
-            mTextAudienceCount.setText("" + mAudienceListState.audienceList.get().size());
-        }
+        mTextAudienceCount.setText("" + count);
+        mLayoutAudienceCount.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
     }
 
     private void reportData(String roomId) {

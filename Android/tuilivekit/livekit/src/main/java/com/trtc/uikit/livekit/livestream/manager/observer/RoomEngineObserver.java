@@ -7,7 +7,9 @@ import static com.trtc.uikit.livekit.livestream.manager.Constants.EVENT_SUB_KEY_
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
+import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.TUICore;
+import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
@@ -108,7 +110,8 @@ public class RoomEngineObserver extends TUIRoomObserver {
         LiveStreamLog.info(mTag + " onKickedOutOfRoom:[roomId:" + roomId + ",reason:" + reason + ",message:"
                 + message + "]");
         if (reason != null && BY_LOGGED_ON_OTHER_DEVICE != reason) {
-            ErrorHandler.handleMessage(message);
+            String msg = TUIConfig.getAppContext().getString(R.string.livekit_kicked_out_of_room_by_owner);
+            ErrorHandler.handleMessage(msg);
             Map<String, Object> params = new HashMap<>();
             params.put("roomId", roomId);
             TUICore.notifyEvent(EVENT_KEY_LIVE_KIT, EVENT_SUB_KEY_FINISH_ACTIVITY, params);

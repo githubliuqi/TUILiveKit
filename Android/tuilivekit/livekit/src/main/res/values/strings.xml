@@ -68,6 +68,7 @@
     <string name="livekit_text_cancel_link_mic_apply">Cancel application for link mic</string>
     <string name="livekit_text_close_link_mic">End the link mic</string>
     <string name="livekit_toast_live_stream_ended">Live stream has ended</string>
+    <string name="livekit_kicked_out_of_room_by_owner">You have been kicked out of the room by the anchor</string>
 
     <string name="livekit_title_link_video_settings">Adjust the video link mic screen</string>
     <string name="livekit_btn_apply_link_mic">Apply for link mic</string>

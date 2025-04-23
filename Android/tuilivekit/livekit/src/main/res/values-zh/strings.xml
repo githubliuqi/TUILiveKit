@@ -61,6 +61,7 @@
     <string name="livekit_text_cancel_link_mic_apply">取消连麦申请</string>
     <string name="livekit_text_close_link_mic">结束连麦</string>
     <string name="livekit_toast_live_stream_ended">直播已结束</string>
+    <string name="livekit_kicked_out_of_room_by_owner">您已被主播踢出房间</string>
 
     <string name="livekit_title_link_video_settings">调整视频连麦画面</string>
     <string name="livekit_btn_apply_link_mic">申请连麦</string>

@@ -1,7 +1,5 @@
 package com.trtc.uikit.livekit.livestreamcore.manager.observer;
 
-import static com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.KickedOutOfRoomReason.BY_LOGGED_ON_OTHER_DEVICE;
-
 import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomObserver;
@@ -20,8 +18,8 @@ public class RoomEngineObserver extends TUIRoomObserver {
     }
 
     @Override
-    public void onRoomDismissed(String roomId) {
-        Logger.info(mTag + " onRoomDismissed:[roomId" + roomId + "]");
+    public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
+        Logger.info(mTag + " onRoomDismissed:[roomId:" + roomId + ",reason:" + reason + "]");
         mVideoLiveManager.getRoomManager().onRoomDismissed(roomId);
     }
 
@@ -45,20 +43,20 @@ public class RoomEngineObserver extends TUIRoomObserver {
     }
 
     public void onRequestCancelled(TUIRoomDefine.Request request, TUIRoomDefine.UserInfo operateUser) {
-        Logger.info(mTag + " onRequestCancelled:[request:" + request + ",operateUser:" + operateUser + "]");
+        Logger.info(mTag + " onRequestCancelled:[request:" + new Gson().toJson(request) + ",operateUser:" + new Gson().toJson(operateUser) + "]");
         mVideoLiveManager.getCoGuestManager().onRequestCancelled(request, operateUser);
     }
 
     @Override
-    public void onRequestProcessed(String requestId, String userId) {
-        Logger.info(mTag + " onRequestProcessed:[requestId:" + requestId + ",userId:" + userId + "]");
-        mVideoLiveManager.getCoGuestManager().onRequestProcessed(requestId, userId);
+    public void onRequestProcessed(TUIRoomDefine.Request request, TUIRoomDefine.UserInfo operateUser) {
+        Logger.info(mTag + " onRequestProcessed:[request:" + new Gson().toJson(request) + ",operateUser:" + new Gson().toJson(operateUser) + "]");
+        mVideoLiveManager.getCoGuestManager().onRequestProcessed(request.requestId, operateUser.userId);
     }
 
     @Override
-    public void onKickedOffSeat(String userId) {
-        Logger.info(mTag + " onKickedOffSeat:[userId:" + userId + "]");
-        mVideoLiveManager.getCoGuestManager().onKickedOffSeat(userId);
+    public void onKickedOffSeat(int seatIndex, TUIRoomDefine.UserInfo operateUser) {
+        Logger.info(mTag + " onKickedOffSeat:[seatIndex:" + seatIndex + ",operateUser:" + new Gson().toJson(operateUser) + "]");
+        mVideoLiveManager.getCoGuestManager().onKickedOffSeat(operateUser.userId);
     }
 
     @Override

@@ -37,6 +37,11 @@ public class CoGuestManager extends BaseManager {
         mCoGuestObserver = observer;
     }
 
+    public boolean isMixStreamUserId(String userId) {
+        String mixStreamIdSuffix = "_feedback_" + mVideoLiveState.roomState.roomId;
+        return userId != null && userId.endsWith(mixStreamIdSuffix);
+    }
+
     public boolean isEnable() {
         return mVideoLiveState.coGuestState.enableConnection;
     }

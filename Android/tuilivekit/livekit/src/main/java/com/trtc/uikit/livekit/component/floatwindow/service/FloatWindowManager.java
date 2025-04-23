@@ -233,7 +233,7 @@ public final class FloatWindowManager {
 
     private final TUIRoomObserver mRoomObserver = new TUIRoomObserver() {
         @Override
-        public void onRoomDismissed(String roomId) {
+        public void onRoomDismissed(String roomId, TUIRoomDefine.RoomDismissedReason reason) {
             dismissFloatWindow();
         }
 

@@ -448,14 +448,8 @@ public class LiveCoreView extends FrameLayout {
 
     private void callbackConnectedRoomsUpdated(List<ConnectionUser> connectionUserList) {
         if (!mConnectionObserver.isEmpty()) {
-            List<ConnectionUser> list = new ArrayList<>();
-            for (int i = 0; i < connectionUserList.size(); i++) {
-                if (!mVideoLiveManager.getCoHostManager().isMixStreamUserId(connectionUserList.get(i).userId)) {
-                    list.add(connectionUserList.get(i));
-                }
-            }
             for (ConnectionObserver observer : mConnectionObserver) {
-                observer.onConnectedRoomsUpdated(list);
+                observer.onConnectedRoomsUpdated(connectionUserList);
             }
         }
     }
@@ -691,9 +685,9 @@ public class LiveCoreView extends FrameLayout {
             public void onBattleStarted(BattleInfo battleInfo) {
                 removeBattleView();
 
-                boolean hasMixStreamUser = mVideoLiveManager.getCoHostManager().hasMixStreamUser();
-                Logger.info("LiveCoreView onBattleStarted, hasMixStreamUser:" + hasMixStreamUser);
-                if (hasMixStreamUser) {
+                boolean isAudience = mVideoLiveManager.getCoHostManager().isAudience();
+                Logger.info("LiveCoreView onBattleStarted, hasMixStreamUser:" + isAudience);
+                if (isAudience) {
                     if (mVideoLayoutList.isEmpty()) {
                         Logger.info("LiveCoreView onBattleStarted, wait for onLiveVideoLayoutChanged");
                     } else {
@@ -1262,7 +1256,7 @@ public class LiveCoreView extends FrameLayout {
                 TUIRoomDefine.VideoStreamType.CAMERA_STREAM, null);
         if (mFreeLayout.indexOfChild(liveView) < 0) {
             mFreeLayout.addView(liveView);
-            if (mVideoLiveManager.getCoHostManager().isMixStreamUserId(userInfo.userId)) {
+            if (mVideoLiveManager.getCoGuestManager().isMixStreamUserId(userInfo.userId)) {
                 return;
             }
             if (mVideoViewAdapter != null) {
@@ -1454,9 +1448,13 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private void onCoHostUserListChange(List<ConnectionUser> coHostUsers) {
+        if (mVideoLiveManager.getCoHostManager().isAudience()) {
+            return;
+        }
         for (ConnectionUser user : coHostUsers) {
-            if (mVideoLiveManager.getCoHostManager().isMixStreamUserId(user.userId)) {
-                return;
+            if (TextUtils.equals(mRoomState.ownerInfo.userId, user.userId)) {
+                addCoHostLiveView(user);
+                break;
             }
         }
         for (ConnectionUser user : coHostUsers) {

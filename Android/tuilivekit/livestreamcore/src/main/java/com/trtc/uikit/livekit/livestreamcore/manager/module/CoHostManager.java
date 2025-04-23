@@ -46,19 +46,8 @@ public class CoHostManager extends BaseManager {
         mVideoLiveState.coHostState.enableConnection = enable;
     }
 
-    public boolean isMixStreamUserId(String userId) {
-        String mixStreamIdSuffix =  "_feedback_" + mVideoLiveState.roomState.roomId;
-        return userId != null && userId.endsWith(mixStreamIdSuffix);
-    }
-
-    public boolean hasMixStreamUser() {
-        List<ConnectionUser> connectedUserList = mCoHostState.connectedUserList.get();
-        for (int i = 0; i < connectedUserList.size(); i++) {
-            if (isMixStreamUserId(connectedUserList.get(i).userId)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isAudience() {
+        return !TextUtils.equals(mVideoLiveState.userState.selfInfo.userId, mVideoLiveState.roomState.ownerInfo.userId);
     }
 
     public void requestConnection(String roomId, int timeoutSeconds, TUIRoomDefine.ActionCallback callback) {

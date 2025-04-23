@@ -164,4 +164,13 @@ public class UserManager extends BaseManager {
     public void clearEnterUserInfo() {
         mUserState.enterUserInfo.set(null);
     }
+
+    public void kickRemoteUserOutOfRoom(String userId) {
+        mLiveService.kickRemoteUserOutOfRoom(userId, null);
+    }
+
+    public void disableSendingMessageByAdmin(String userId, boolean isDisable) {
+        mLiveService.disableSendingMessageByAdmin(userId, isDisable, null);
+    }
+
 }

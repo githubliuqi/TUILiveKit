@@ -63,6 +63,9 @@ public interface ILiveService {
 
     void kickUserOffSeatByAdmin(int seatIndex, String userId, TUIRoomDefine.ActionCallback callback);
 
+    void kickRemoteUserOutOfRoom(String userId, TUIRoomDefine.ActionCallback callback);
+
+    void disableSendingMessageByAdmin(String userId, boolean isDisable, TUIRoomDefine.ActionCallback callback);
 
     /****************************************** User Business *******************************************/
     void getUserList(long nextSequence, TUIRoomDefine.GetUserListCallback callback);

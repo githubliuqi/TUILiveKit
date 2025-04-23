@@ -518,6 +518,50 @@ public class LiveServiceImpl implements ILiveService {
         });
     }
 
+    @Override
+    public void kickRemoteUserOutOfRoom(String userId, TUIRoomDefine.ActionCallback callback) {
+        LiveStreamLog.info(mTag + " kickRemoteUserOutOfRoom:[userId:" + userId + "]");
+        mTUIRoomEngine.kickRemoteUserOutOfRoom(userId, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveStreamLog.info(mTag + " kickRemoteUserOutOfRoom:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveStreamLog.error(mTag + " kickRemoteUserOutOfRoom:[onError:[error:" + error + ",message:" + message + "]]");
+                if (callback != null) {
+                    callback.onError(error, message);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void disableSendingMessageByAdmin(String userId, boolean isDisable, TUIRoomDefine.ActionCallback callback) {
+        LiveStreamLog.info(mTag + " disableSendingMessageByAdmin:[userId:" + userId + ",isDisable:" + isDisable + "]");
+        mTUIRoomEngine.disableSendingMessageByAdmin(userId, isDisable, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                LiveStreamLog.info(mTag + " disableSendingMessageByAdmin:[onSuccess]");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                LiveStreamLog.error(mTag + " disableSendingMessageByAdmin:[onError:[error:" + error + ",message:" + message + "]]");
+                if (callback != null) {
+                    callback.onError(error, message);
+                }
+            }
+        });
+    }
+
     /****************************************** User Business *******************************************/
     @Override
     public void getUserList(long nextSequence, TUIRoomDefine.GetUserListCallback callback) {

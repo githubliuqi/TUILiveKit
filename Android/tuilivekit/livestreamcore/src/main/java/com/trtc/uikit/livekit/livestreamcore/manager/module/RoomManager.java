@@ -102,6 +102,7 @@ public class RoomManager extends BaseManager {
             callback.onError(TUICommonDefine.Error.INVALID_PARAMETER, "roomId is empty");
             return;
         }
+        mVideoLiveState.roomState.roomId = roomId;
         mVideoLiveService.enterRoom(roomId, new TUIRoomDefine.GetRoomInfoCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {

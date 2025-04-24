@@ -1,17 +1,16 @@
-package com.trtc.uikit.component.barrage.service;
+package com.trtc.uikit.component.gift.service;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tencent.imsdk.BaseConstants;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.trtc.tuikit.common.system.ContextProvider;
-import com.trtc.uikit.component.barrage.R;
 import com.trtc.uikit.component.common.CommonLogger;
+import com.trtc.uikit.component.gift.R;
 
 public class ErrorLocalized {
 
-    private static final CommonLogger LOGGER = CommonLogger.getCommonLogger("BarrageErrorLocalized");
+    private static final CommonLogger LOGGER = CommonLogger.getCommonLogger("GiftErrorLocalized");
 
     public static void onError(int error) {
         if (error == BaseConstants.ERR_SUCC) {
@@ -30,16 +29,16 @@ public class ErrorLocalized {
         }
         switch (error) {
             case BaseConstants.ERR_SDK_COMM_API_CALL_FREQUENCY_LIMIT:
-                message = context.getString(R.string.live_barrage_error_freq_limit);
+                message = context.getString(R.string.live_gift_error_freq_limit);
                 break;
             case BaseConstants.ERR_SVR_GROUP_SHUTUP_DENY:
-                message = context.getString(R.string.live_barrage_error_disable_message_by_admin);
+                message = context.getString(R.string.live_gift_error_disable_message_by_admin);
                 break;
             case BaseConstants.ERR_SDK_BLOCKED_BY_SENSITIVE_WORD:
-                message = context.getString(R.string.live_barrage_error_sensitive_word);
+                message = context.getString(R.string.live_gift_error_sensitive_word);
                 break;
             case BaseConstants.ERR_SDK_NET_PKG_SIZE_LIMIT:
-                message = context.getString(R.string.live_barrage_error_content_is_long);
+                message = context.getString(R.string.live_gift_error_content_is_long);
                 break;
             case BaseConstants.ERR_SDK_NET_DISCONNECT:
             case BaseConstants.ERR_SDK_NET_WAIT_ACK_TIMEOUT:
@@ -53,13 +52,13 @@ public class ErrorLocalized {
             case BaseConstants.ERR_SDK_NET_WAIT_SEND_TIMEOUT_NO_NETWORK:
             case BaseConstants.ERR_SDK_NET_WAIT_ACK_TIMEOUT_NO_NETWORK:
             case BaseConstants.ERR_SDK_NET_SEND_REMAINING_TIMEOUT_NO_NETWORK:
-                message = context.getString(R.string.live_barrage_error_network);
+                message = context.getString(R.string.live_gift_error_network);
                 break;
             case BaseConstants.ERR_SVR_GROUP_NOT_FOUND:
-                message = context.getString(R.string.live_barrage_error_group_not_found);
+                message = context.getString(R.string.live_gift_error_group_not_found);
                 break;
             default:
-                message = context.getString(R.string.live_barrage_error_failed) + error;
+                message = context.getString(R.string.live_gift_error_failed) + error;
         }
         return message;
     }

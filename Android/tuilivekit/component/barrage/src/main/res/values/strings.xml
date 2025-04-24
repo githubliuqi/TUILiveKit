@@ -13,4 +13,5 @@
     <string name="live_barrage_error_disable_message_by_admin">You have been muted in the current room</string>
     <string name="live_barrage_error_network">The network is abnormal, please try again later</string>
     <string name="live_barrage_error_content_is_long">The content is too long, please reduce the content and try again</string>
+    <string name="live_barrage_error_group_not_found">The room has been disbanded</string>
 </resources>

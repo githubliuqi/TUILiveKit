@@ -13,6 +13,7 @@ import com.tencent.qcloud.tuicore.interfaces.TUICallback;
 import com.trtc.uikit.component.barrage.store.BarrageState;
 import com.trtc.uikit.component.barrage.store.BarrageStore;
 import com.trtc.uikit.component.barrage.store.model.Barrage;
+import com.trtc.uikit.component.common.CommonLogger;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class BarrageIMService {
 
                     @Override
                     public void onError(int i, String s) {
-                        Log.i(TAG, "sendGroupTextMessage error " + i + " errorMessage:" + s);
+                        CommonLogger.error("Barrage", "BarrageIMService", " sendGroupCustomMessage failed:errorCode:" + i + ",message:" + s);
                         if (callback != null) {
                             callback.onError(i, s);
                         }

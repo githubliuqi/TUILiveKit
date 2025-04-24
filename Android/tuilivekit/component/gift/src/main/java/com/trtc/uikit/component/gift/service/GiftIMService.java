@@ -11,6 +11,8 @@ import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
+import com.trtc.uikit.component.common.CommonLogger;
 import com.trtc.uikit.component.gift.store.GiftSendData;
 import com.trtc.uikit.component.gift.store.GiftState;
 import com.trtc.uikit.component.gift.store.GiftStore;
@@ -123,7 +125,8 @@ public class GiftIMService {
                 V2TIMMessage.V2TIM_PRIORITY_NORMAL, new V2TIMValueCallback<V2TIMMessage>() {
                     @Override
                     public void onError(int i, String s) {
-
+                        CommonLogger.error("Gift", "GiftIMService", " sendGroupCustomMessage failed:errorCode:" + i + ",message:" + s);
+                        ErrorLocalized.onError(i);
                     }
 
                     @Override

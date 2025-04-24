@@ -2,4 +2,12 @@
     <string name="livekit_gift_me">Me</string>
     <string name="livekit_sent">&#160;sent&#160;</string>
     <string name="livekit_gift_give_gift">Give gift</string>
+    <!-- Error Toast -->
+    <string name="live_gift_error_failed">Temporarily Unclassified General Error</string>
+    <string name="live_gift_error_freq_limit">Request Rate Limited, Please Try Again Later</string>
+    <string name="live_gift_error_sensitive_word">Sensitive words are detected, please modify it and try again</string>
+    <string name="live_gift_error_disable_message_by_admin">You have been muted in the current room</string>
+    <string name="live_gift_error_network">The network is abnormal, please try again later</string>
+    <string name="live_gift_error_content_is_long">The content is too long, please reduce the content and try again</string>
+    <string name="live_gift_error_group_not_found">The room has been disbanded</string>
 </resources>

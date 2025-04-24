@@ -12,6 +12,9 @@ import com.tencent.imsdk.v2.V2TIMFollowTypeCheckResult;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.tencent.qcloud.tuicore.util.ToastUtil;
+import com.trtc.uikit.component.common.CommonLogger;
+import com.trtc.uikit.component.common.ErrorLocalized;
 import com.trtc.uikit.component.roominfo.store.RoomInfoState;
 
 import java.util.ArrayList;
@@ -34,6 +37,8 @@ public class RoomInfoService {
 
                     @Override
                     public void onError(TUICommonDefine.Error error, String message) {
+                        CommonLogger.error("RoomInfo", "RoomInfoService", " fetchRoomInfo failed:error:" + error + ",errorCode:" + error.getValue() + ",message:" + message);
+                        ErrorLocalized.onError(error);
                     }
                 });
     }
@@ -56,7 +61,8 @@ public class RoomInfoService {
 
                     @Override
                     public void onError(int code, String desc) {
-
+                        CommonLogger.error("RoomInfo", "RoomInfoService", " getUserFollowInfo failed:errorCode:" + code + ",message:" + desc);
+                        ToastUtil.toastShortMessage(code + "," + desc);
                     }
                 });
     }
@@ -84,7 +90,8 @@ public class RoomInfoService {
 
                     @Override
                     public void onError(int code, String desc) {
-
+                        CommonLogger.error("RoomInfo", "RoomInfoService", " checkFollowType failed:errorCode:" + code + ",message:" + desc);
+                        ToastUtil.toastShortMessage(code + "," + desc);
                     }
 
                 });
@@ -103,6 +110,8 @@ public class RoomInfoService {
 
                     @Override
                     public void onError(int code, String desc) {
+                        CommonLogger.error("RoomInfo", "RoomInfoService", " followUser failed:errorCode:" + code + ",message:" + desc);
+                        ToastUtil.toastShortMessage(code + "," + desc);
                     }
                 });
     }
@@ -120,6 +129,8 @@ public class RoomInfoService {
 
                     @Override
                     public void onError(int code, String desc) {
+                        CommonLogger.error("RoomInfo", "RoomInfoService", " unfollowUser failed:errorCode:" + code + ",message:" + desc);
+                        ToastUtil.toastShortMessage(code + "," + desc);
                     }
                 });
     }

@@ -9,7 +9,9 @@ import com.tencent.imsdk.v2.V2TIMGroupMemberInfo;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSimpleMsgListener;
+import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
+import com.trtc.uikit.component.common.CommonLogger;
 import com.trtc.uikit.component.gift.store.GiftStore;
 import com.trtc.uikit.component.gift.store.LikeState;
 import com.trtc.uikit.component.gift.store.model.GiftUser;
@@ -89,7 +91,18 @@ public class LikeIMService {
         String data = getCusLikeMsgJsonStr();
         Log.i(TAG, " send like: " + data);
         V2TIMManager.getInstance().sendGroupCustomMessage(
-                data.getBytes(), roomId, V2TIMMessage.V2TIM_PRIORITY_LOW, null);
+                data.getBytes(), roomId, V2TIMMessage.V2TIM_PRIORITY_LOW, new V2TIMValueCallback<V2TIMMessage>() {
+                    @Override
+                    public void onSuccess(V2TIMMessage v2TIMMessage) {
+
+                    }
+
+                    @Override
+                    public void onError(int code, String desc) {
+                        CommonLogger.error("Gift", "LikeIMService", " sendGroupCustomMessage failed:errorCode:" + code + ",message:" + desc);
+                        ErrorLocalized.onError(code);
+                    }
+                });
     }
 
     private static String getCusLikeMsgJsonStr() {

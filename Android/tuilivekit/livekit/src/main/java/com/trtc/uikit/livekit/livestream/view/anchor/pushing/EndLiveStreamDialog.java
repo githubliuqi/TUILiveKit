@@ -19,6 +19,8 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.ui.PopupDialog;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
+import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
@@ -124,6 +126,9 @@ public class EndLiveStreamDialog extends PopupDialog {
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String s) {
+                    LiveStreamLog.error("EndLiveStreamDialog" + " getLiveInfo " +
+                            "failed:error:" + error + "," + "errorCode:" + error.getValue() + ",message:" + s);
+                    ErrorHandler.onError(error);
                     int maxAudienceCount = mLiveStreamManager.getRoomState().maxAudienceCount;
                     mLiveStreamManager.getDashboardManager().updateMaxViewersCount(maxAudienceCount);
                     stopLiveStream();
@@ -147,7 +152,9 @@ public class EndLiveStreamDialog extends PopupDialog {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-
+                LiveStreamLog.error("EndLiveStreamDialog" + " stopLiveStream " +
+                        "failed:error:" + error + "," + "errorCode:" + error.getValue() + ",message:" + message);
+                ErrorHandler.onError(error);
             }
         });
     }

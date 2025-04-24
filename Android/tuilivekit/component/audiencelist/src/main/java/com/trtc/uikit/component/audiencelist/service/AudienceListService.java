@@ -4,6 +4,8 @@ import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.trtc.uikit.component.audiencelist.store.AudienceListState;
+import com.trtc.uikit.component.common.CommonLogger;
+import com.trtc.uikit.component.common.ErrorLocalized;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -36,13 +38,16 @@ public class AudienceListService {
 
                             @Override
                             public void onError(TUICommonDefine.Error error, String message) {
+                                CommonLogger.error("AudienceList", "AudienceListService", " getAudienceList failed:error:" + error + ",errorCode:" + error.getValue() + ",message:" + message);
+                                ErrorLocalized.onError(error);
                             }
                         });
                     }
 
                     @Override
                     public void onError(TUICommonDefine.Error error, String message) {
-
+                        CommonLogger.error("AudienceList", "AudienceListService", " fetchRoomInfo failed:error:" + error + ",errorCode:" + error.getValue() + ",message:" + message);
+                        ErrorLocalized.onError(error);
                     }
                 });
     }

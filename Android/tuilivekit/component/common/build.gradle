@@ -24,5 +24,7 @@ android {
 }
 
 dependencies {
+    api "com.tencent.liteav.tuikit:tuicore:latest.release"
+    api rootProject.getProperties().containsKey("liteavSdk") ? rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_Professional:latest.release"
     api rootProject.getProperties().containsKey("roomEngineSdk") ? rootProject.ext.roomEngineSdk : "io.trtc.uikit:rtc_room_engine:latest.release"
 }

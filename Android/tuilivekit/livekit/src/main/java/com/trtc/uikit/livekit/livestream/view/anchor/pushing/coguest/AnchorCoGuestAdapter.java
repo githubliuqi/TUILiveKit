@@ -17,6 +17,8 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.trtc.tuikit.common.imageloader.ImageLoader;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
+import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.state.CoGuestState;
 import com.trtc.uikit.livekit.livestreamcore.LiveCoreView;
 
@@ -72,7 +74,9 @@ public class AnchorCoGuestAdapter extends RecyclerView.Adapter<AnchorCoGuestAdap
 
                 @Override
                 public void onError(TUICommonDefine.Error error, String message) {
-
+                    ErrorHandler.onError(error);
+                    LiveStreamLog.error("AnchorCoGuestAdapter" + " disconnectUser failed:error:" + error + "," +
+                            "errorCode:" + error.getValue() + ",message:" + message);
                 }
             });
         });

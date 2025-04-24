@@ -89,7 +89,8 @@ public class AudienceView extends BasicView {
     private       AudienceListView                     mAudienceListView;
     private       BarrageStreamView                    mBarrageStreamView;
     private       ImageView                            mImageFloatWindow;
-    private       ImageView                            mImageExitRoom;
+    private       ImageView                            mImageStandardExit;
+    private       ImageView                            mImageCompactExit;
     private       CoGuestRequestFloatView              mWaitingCoGuestPassView;
     private final Observer<RoomState.LiveStatus>       mLiveStatusChangeObserver = this::onLiveStatusChange;
     private final Observer<CoGuestState.CoGuestStatus> mLinkStatusObserver       = this::onLinkStatusChange;
@@ -123,7 +124,8 @@ public class AudienceView extends BasicView {
         mWaitingCoGuestPassView = findViewById(R.id.btn_waiting_pass);
         mGiftPlayView = findViewById(R.id.gift_play_view);
         mImageFloatWindow = findViewById(R.id.iv_float_window);
-        mImageExitRoom = findViewById(R.id.iv_exit_room);
+        mImageStandardExit = findViewById(R.id.iv_standard_exit_room);
+        mImageCompactExit = findViewById(R.id.iv_compact_exit_room);
     }
 
     @Override
@@ -279,12 +281,14 @@ public class AudienceView extends BasicView {
     }
 
     private void initExitRoomView() {
-        mImageExitRoom.setOnClickListener(view -> {
+        OnClickListener listener = v -> {
             mLiveCoreView.leaveLiveStream(null);
             if (mContext instanceof Activity) {
                 ((Activity) mContext).finish();
             }
-        });
+        };
+        mImageStandardExit.setOnClickListener(listener);
+        mImageCompactExit.setOnClickListener(listener);
     }
 
     private void initFloatWindowView() {

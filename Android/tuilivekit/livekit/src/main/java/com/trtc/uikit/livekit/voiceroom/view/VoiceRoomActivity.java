@@ -19,7 +19,7 @@ public class VoiceRoomActivity extends FullScreenActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         setContentView(R.layout.livekit_activity_video_live_audience);
 
         String roomId = getIntent().getStringExtra(INTENT_KEY_ROOM_ID);

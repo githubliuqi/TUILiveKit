@@ -16,7 +16,7 @@ public class VideoLiveAudienceActivity extends FullScreenActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         String roomId = getIntent().getStringExtra(INTENT_KEY_ROOM_ID);
         setContentView(R.layout.livekit_activity_video_live_audience);

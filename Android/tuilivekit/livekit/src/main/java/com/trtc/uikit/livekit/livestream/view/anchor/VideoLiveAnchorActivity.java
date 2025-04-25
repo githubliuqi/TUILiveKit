@@ -20,7 +20,7 @@ public class VideoLiveAnchorActivity extends FullScreenActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         String roomId = getIntent().getStringExtra(INTENT_KEY_ROOM_ID);
         boolean needCreateRoom = getIntent().getBooleanExtra(INTENT_KEY_NEED_CREATE, true);

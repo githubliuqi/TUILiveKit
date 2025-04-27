@@ -269,6 +269,7 @@ public class AnchorView extends BasicView {
         if (mRoomBehavior == TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM) {
             mLayoutPushing.setVisibility(VISIBLE);
             mUserManager.initSelfUserData();
+            mLiveManager.getMediaManager().setDefaultAudioQualityEx();
             mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
                 @Override
                 public void onSuccess(RoomInfo roomInfo) {
@@ -390,6 +391,7 @@ public class AnchorView extends BasicView {
             roomInfo.roomId = mRoomState.roomId;
             roomInfo.name = mRoomState.roomName.get();
             mUserManager.initSelfUserData();
+            mLiveManager.getMediaManager().setDefaultAudioQualityEx();
             mLiveCoreView.startLiveStream(roomInfo, new GetRoomInfoCallback() {
                 @Override
                 public void onSuccess(RoomInfo roomInfo) {

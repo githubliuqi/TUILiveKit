@@ -215,6 +215,7 @@ public class AudienceView extends BasicView {
 
     private void joinLiveStream() {
         mUserManager.initSelfUserData();
+        mLiveManager.getMediaManager().setDefaultAudioQualityEx();
         mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
             @Override
             public void onSuccess(RoomInfo roomInfo) {

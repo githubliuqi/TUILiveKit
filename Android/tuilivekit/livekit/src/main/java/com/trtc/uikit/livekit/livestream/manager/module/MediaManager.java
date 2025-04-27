@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
+import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.TUIConstants;
 import com.tencent.qcloud.tuicore.TUICore;
@@ -34,6 +35,12 @@ public class MediaManager extends BaseManager {
     @Override
     public void destroy() {
         LiveStreamLog.info(TAG + " destroy");
+    }
+
+    public void setDefaultAudioQualityEx() {
+        LiveStreamLog.info(TAG + " setDefaultAudioQualityEx");
+        TUIRoomEngine.sharedInstance().getTRTCCloud().callExperimentalAPI("{\"api\":\"setAudioQualityEx\",\"params\":{\"audioScene\":1}}");
+        TUIRoomEngine.sharedInstance().getTRTCCloud().setSystemVolumeType(1);
     }
 
     public void setLocalVideoView(TUIVideoView view) {

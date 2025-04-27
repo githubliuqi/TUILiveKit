@@ -98,7 +98,7 @@ public class CoGuestWidgetsView extends BasicView {
 
     private void initUserNameView() {
         if (mState.userId.equals(mUserState.selfInfo.userId) || (mState.userId.equals(mRoomState.ownerInfo.userId)
-                && mCoGuestState.coGuestStatus.get() == CoGuestState.CoGuestStatus.NONE)) {
+                && mCoGuestState.coGuestStatus.get() != CoGuestStatus.LINKING)) {
             mLayoutUserInfo.setVisibility(GONE);
         } else {
             mLayoutUserInfo.setVisibility(VISIBLE);

@@ -13,7 +13,6 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.cloud.tuikit.engine.room.TUIRoomEngine;
 import com.trtc.uikit.livekit.component.roomlist.store.RoomListState;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
-import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 
 import java.util.List;
 
@@ -72,7 +71,6 @@ public class RoomListService {
 
             @Override
             public void onError(TUICommonDefine.Error error, String s) {
-                ErrorHandler.onError(error);
                 LiveStreamLog.error("RoomListService fetchLiveList failed:error:" + error + ",errorCode:" + error.getValue() + ",message:" + s);
                 mRoomListState.mLoadStatus.set(false);
                 mRoomListState.mRefreshStatus.set(false);

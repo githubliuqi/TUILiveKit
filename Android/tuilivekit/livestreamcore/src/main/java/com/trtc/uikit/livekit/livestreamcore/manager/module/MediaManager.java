@@ -373,6 +373,6 @@ public class MediaManager extends BaseManager {
         mVideoLiveService.setBeautyStyle(TXBeautyStyleSmooth);
         mVideoLiveService.updateVideoQuality(Q_1080P);
         mVideoLiveService.updateAudioQuality(TUIRoomDefine.AudioQuality.DEFAULT);
-        mVideoLiveService.setCameraMirror(true);
+        mVideoLiveService.setCameraMirror(mMediaState.isMirror.get());
     }
 }

@@ -611,6 +611,11 @@ public class LiveStreamImpl implements ILiveStream {
         });
     }
 
+    public void stopPlayRemoteVideo(String userId, TUIRoomDefine.VideoStreamType streamType) {
+        Logger.info(mTag + " stopPlayRemoteVideo:[userId:" + userId + "streamType:" + streamType + "]");
+        mTUIRoomEngine.stopPlayRemoteVideo(userId, streamType);
+    }
+
     @Override
     public void muteLocalAudio() {
         Logger.info(mTag + " muteLocalAudio:[]");

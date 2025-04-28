@@ -774,6 +774,20 @@ public class LiveCoreView extends FrameLayout {
             @Override
             public void onUserVideoStateChanged(String userId, TUIRoomDefine.VideoStreamType streamType,
                                                 boolean hasVideo, TUIRoomDefine.ChangeReason reason) {
+                if (!mVideoLiveManager.getUserManager().isSelf(userId)) {
+                    if (hasVideo) {
+                        LiveStreamView liveView = mRemoteLiveViewMap.get(userId);
+                        if (liveView != null) {
+                            mVideoLiveManager.getMediaManager().setRemoteVideoView(userId,
+                                    TUIRoomDefine.VideoStreamType.CAMERA_STREAM, liveView.getTUIVideoView());
+                        }
+                        mVideoLiveManager.getMediaManager().startPlayRemoteVideo(userId,
+                                TUIRoomDefine.VideoStreamType.CAMERA_STREAM, null);
+                    } else {
+                        mVideoLiveManager.getMediaManager().stopPlayRemoteVideo(userId,
+                                TUIRoomDefine.VideoStreamType.CAMERA_STREAM);
+                    }
+                }
                 if (mVideoViewAdapter == null) {
                     return;
                 }
@@ -1252,8 +1266,6 @@ public class LiveCoreView extends FrameLayout {
         LiveStreamView liveView = createRemoteLiveViewByUserId(userInfo.userId);
         mVideoLiveManager.getMediaManager().setRemoteVideoView(userInfo.userId,
                 TUIRoomDefine.VideoStreamType.CAMERA_STREAM, liveView.getTUIVideoView());
-        mVideoLiveManager.getMediaManager().startPlayRemoteVideo(userInfo.userId,
-                TUIRoomDefine.VideoStreamType.CAMERA_STREAM, null);
         if (mFreeLayout.indexOfChild(liveView) < 0) {
             mFreeLayout.addView(liveView);
             if (mVideoLiveManager.getCoGuestManager().isMixStreamUserId(userInfo.userId)) {
@@ -1296,8 +1308,6 @@ public class LiveCoreView extends FrameLayout {
         LiveStreamView liveView = createRemoteLiveViewByUserId(userInfo.userId);
         mVideoLiveManager.getMediaManager().setRemoteVideoView(userInfo.userId,
                 TUIRoomDefine.VideoStreamType.CAMERA_STREAM, liveView.getTUIVideoView());
-        mVideoLiveManager.getMediaManager().startPlayRemoteVideo(userInfo.userId,
-                TUIRoomDefine.VideoStreamType.CAMERA_STREAM, null);
         if (mFreeLayout.indexOfChild(liveView) < 0) {
             mFreeLayout.addView(liveView);
             if (mVideoViewAdapter != null) {

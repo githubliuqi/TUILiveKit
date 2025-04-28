@@ -225,7 +225,8 @@ public class AudienceView extends BasicView {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                ErrorHandler.onError(error);
+                String msg = mContext.getString(com.trtc.uikit.component.common.R.string.common_message_blocked_by_administrator);
+                ErrorHandler.onError(error, msg);
                 removeAllViews();
                 if (mContext instanceof Activity) {
                     ((Activity) mContext).finish();

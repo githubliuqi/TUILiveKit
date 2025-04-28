@@ -6,7 +6,7 @@
     <string name="common_client_error_camera_occupied">Camera is Occupied, Check if Other Process is Using Camera</string>
     <string name="common_client_error_camera_start_fail">System Issue, Failed to Open Camera. Check if Camera Device is Normal</string>
     <string name="common_client_error_exit_not_supported_for_room_owner">Room Owner Does Not Support Leaving the Room, Room Owner Can Only Close the Room</string>
-    <string name="common_client_error_failed">Temporarily Unclassified General Error</string>
+    <string name="common_client_error_failed">Oops! Our system hiccuped. Try again later</string>
     <string name="common_client_error_freq_limit">Request Rate Limited, Please Try Again Later</string>
     <string name="common_client_error_get_screen_sharing_target_failed">Failed to get screen sharing source (screen and window), check screen recording permissions</string>
     <string name="common_client_error_invalid_parameter">Passing illegal parameters when calling API, check if the parameters are legal</string>
@@ -92,4 +92,13 @@
     <string name="common_server_error_this_member_has_been_banned">This member has been banned</string>
     <string name="common_server_error_this_member_has_been_muted">This member has been muted</string>
     <string name="common_server_error_user_is_already_on_the_mic_seat">The user is already on the seat</string>
+    <string name="common_message_blocked_by_administrator">You have been blocked by the administrator and cannot enter this room</string>
+    <string name="common_im_error_failed">Oops! Our system hiccuped. Try again later</string>
+    <string name="common_im_error_freq_limit">Request Rate Limited, Please Try Again Later</string>
+    <string name="common_im_error_sensitive_word">Sensitive words are detected, please modify it and try again</string>
+    <string name="common_im_error_disable_message_by_admin">You have been muted in the current room</string>
+    <string name="common_im_error_network">The network is abnormal, please try again later</string>
+    <string name="common_im_error_content_is_long">The content is too long, please reduce the content and try again</string>
+    <string name="common_im_error_group_not_found">The room has been disbanded</string>
+    <string name="common_im_error_invalid_parameters">The input parameters are incorrect</string>
 </resources>

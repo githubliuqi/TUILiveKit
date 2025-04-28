@@ -3,6 +3,7 @@ package com.trtc.uikit.component.common;
 import android.content.Context;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
+import com.tencent.imsdk.BaseConstants;
 import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 
@@ -104,6 +105,25 @@ public class ErrorLocalized {
     public static final int LIVE_SERVER_ERROR_METADATA_NO_VALID_KEYS                                  = 100503;
     public static final int LIVE_SERVER_ERROR_METADATA_THE_SIZE_OF_KEY_EXCEEDS_THE_MAXIMUM_BYTE_LIMIT = 100504;
 
+    public static final int LIVE_IM_ERR_SDK_COMM_API_CALL_FREQUENCY_LIMIT         = BaseConstants.ERR_SDK_COMM_API_CALL_FREQUENCY_LIMIT;
+    public static final int LIVE_IM_ERR_SVR_GROUP_SHUTUP_DENY                     = BaseConstants.ERR_SVR_GROUP_SHUTUP_DENY;
+    public static final int LIVE_IM_ERR_SDK_BLOCKED_BY_SENSITIVE_WORD             = BaseConstants.ERR_SDK_BLOCKED_BY_SENSITIVE_WORD;
+    public static final int LIVE_IM_ERR_SDK_NET_PKG_SIZE_LIMIT                    = BaseConstants.ERR_SDK_NET_PKG_SIZE_LIMIT;
+    public static final int LIVE_IM_ERR_SDK_NET_DISCONNECT                        = BaseConstants.ERR_SDK_NET_DISCONNECT;
+    public static final int LIVE_IM_ERR_SDK_NET_WAIT_ACK_TIMEOUT                  = BaseConstants.ERR_SDK_NET_WAIT_ACK_TIMEOUT;
+    public static final int LIVE_IM_ERR_SDK_NET_ALLREADY_CONN                     = BaseConstants.ERR_SDK_NET_ALLREADY_CONN;
+    public static final int LIVE_IM_ERR_SDK_NET_CONN_TIMEOUT                      = BaseConstants.ERR_SDK_NET_CONN_TIMEOUT;
+    public static final int LIVE_IM_ERR_SDK_NET_CONN_REFUSE                       = BaseConstants.ERR_SDK_NET_CONN_REFUSE;
+    public static final int LIVE_IM_ERR_SDK_NET_NET_UNREACH                       = BaseConstants.ERR_SDK_NET_NET_UNREACH;
+    public static final int LIVE_IM_ERR_SDK_NET_WAIT_INQUEUE_TIMEOUT              = BaseConstants.ERR_SDK_NET_WAIT_INQUEUE_TIMEOUT;
+    public static final int LIVE_IM_ERR_SDK_NET_WAIT_SEND_TIMEOUT                 = BaseConstants.ERR_SDK_NET_WAIT_SEND_TIMEOUT;
+    public static final int LIVE_IM_ERR_SDK_NET_WAIT_SEND_REMAINING_TIMEOUT       = BaseConstants.ERR_SDK_NET_WAIT_SEND_REMAINING_TIMEOUT;
+    public static final int LIVE_IM_ERR_SDK_NET_WAIT_SEND_TIMEOUT_NO_NETWORK      = BaseConstants.ERR_SDK_NET_WAIT_SEND_TIMEOUT_NO_NETWORK;
+    public static final int LIVE_IM_ERR_SDK_NET_WAIT_ACK_TIMEOUT_NO_NETWORK       = BaseConstants.ERR_SDK_NET_WAIT_ACK_TIMEOUT_NO_NETWORK;
+    public static final int LIVE_IM_ERR_SDK_NET_SEND_REMAINING_TIMEOUT_NO_NETWORK = BaseConstants.ERR_SDK_NET_SEND_REMAINING_TIMEOUT_NO_NETWORK;
+    public static final int LIVE_IM_ERR_SVR_GROUP_NOT_FOUND                       = BaseConstants.ERR_SVR_GROUP_NOT_FOUND;
+    public static final int LIVE_IM_ERR_INVALID_PARAMETERS                        = BaseConstants.ERR_INVALID_PARAMETERS;
+
     private static final HashSet<Integer> INTERCEPT_TOAST_ONLY_PRINT_LOG =
             new HashSet<>(Arrays.asList(LIVE_CLIENT_ERROR_ROOM_MISMATCH));
 
@@ -114,6 +134,16 @@ public class ErrorLocalized {
             return;
         }
         String message = convertToErrorMessage(error);
+        LOGGER.info("[error:" + error + ",value:" + error.getValue() + ",message:" + message + "]");
+        if (!INTERCEPT_TOAST_ONLY_PRINT_LOG.contains(error.getValue())) {
+            ToastUtil.toastShortMessage(message);
+        }
+    }
+
+    public static void onError(TUICommonDefine.Error error, String message) {
+        if (error == TUICommonDefine.Error.SUCCESS) {
+            return;
+        }
         LOGGER.info("[error:" + error + ",value:" + error.getValue() + ",message:" + message + "]");
         if (!INTERCEPT_TOAST_ONLY_PRINT_LOG.contains(error.getValue())) {
             ToastUtil.toastShortMessage(message);
@@ -409,6 +439,38 @@ public class ErrorLocalized {
             case LIVE_SERVER_ERROR_METADATA_THE_SIZE_OF_KEY_EXCEEDS_THE_MAXIMUM_BYTE_LIMIT:
                 error_message =
                         context.getString(R.string.common_server_error_metadata_the_size_of_key_exceeds_the_maximum_byte_limit);
+                break;
+            case LIVE_IM_ERR_SDK_COMM_API_CALL_FREQUENCY_LIMIT:
+                error_message = context.getString(R.string.common_im_error_freq_limit);
+                break;
+            case LIVE_IM_ERR_SVR_GROUP_SHUTUP_DENY:
+                error_message = context.getString(R.string.common_im_error_disable_message_by_admin);
+                break;
+            case LIVE_IM_ERR_SDK_BLOCKED_BY_SENSITIVE_WORD:
+                error_message = context.getString(R.string.common_im_error_sensitive_word);
+                break;
+            case LIVE_IM_ERR_SDK_NET_PKG_SIZE_LIMIT:
+                error_message = context.getString(R.string.common_im_error_content_is_long);
+                break;
+            case LIVE_IM_ERR_SDK_NET_DISCONNECT:
+            case LIVE_IM_ERR_SDK_NET_WAIT_ACK_TIMEOUT:
+            case LIVE_IM_ERR_SDK_NET_ALLREADY_CONN:
+            case LIVE_IM_ERR_SDK_NET_CONN_TIMEOUT:
+            case LIVE_IM_ERR_SDK_NET_CONN_REFUSE:
+            case LIVE_IM_ERR_SDK_NET_NET_UNREACH:
+            case LIVE_IM_ERR_SDK_NET_WAIT_INQUEUE_TIMEOUT:
+            case LIVE_IM_ERR_SDK_NET_WAIT_SEND_TIMEOUT:
+            case LIVE_IM_ERR_SDK_NET_WAIT_SEND_REMAINING_TIMEOUT:
+            case LIVE_IM_ERR_SDK_NET_WAIT_SEND_TIMEOUT_NO_NETWORK:
+            case LIVE_IM_ERR_SDK_NET_WAIT_ACK_TIMEOUT_NO_NETWORK:
+            case LIVE_IM_ERR_SDK_NET_SEND_REMAINING_TIMEOUT_NO_NETWORK:
+                error_message = context.getString(R.string.common_im_error_network);
+                break;
+            case LIVE_IM_ERR_SVR_GROUP_NOT_FOUND:
+                error_message = context.getString(R.string.common_im_error_group_not_found);
+                break;
+            case LIVE_IM_ERR_INVALID_PARAMETERS:
+                error_message = context.getString(R.string.common_im_error_invalid_parameters);
                 break;
             default:
                 error_message = context.getString(R.string.common_client_error_failed) + error.getValue();

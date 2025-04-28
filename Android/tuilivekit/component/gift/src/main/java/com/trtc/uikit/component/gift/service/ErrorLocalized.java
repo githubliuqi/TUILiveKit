@@ -57,6 +57,9 @@ public class ErrorLocalized {
             case BaseConstants.ERR_SVR_GROUP_NOT_FOUND:
                 message = context.getString(R.string.live_gift_error_group_not_found);
                 break;
+            case BaseConstants.ERR_INVALID_PARAMETERS:
+                message = context.getString(R.string.live_gift_error_invalid_parameters);
+                break;
             default:
                 message = context.getString(R.string.live_gift_error_failed) + error;
         }

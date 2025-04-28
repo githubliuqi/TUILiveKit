@@ -10,6 +10,10 @@ public class ErrorHandler {
         ErrorLocalized.onError(error);
     }
 
+    public static void onError(TUICommonDefine.Error error, String message) {
+        ErrorLocalized.onError(error, message);
+    }
+
     public static void handleMessage(String message) {
         ToastUtil.toastShortMessage(message);
     }

@@ -1,5 +1,6 @@
 package com.trtc.uikit.livekit.livestream.view.audience;
 
+import static com.trtc.uikit.component.common.ErrorLocalized.LIVE_SERVER_ERROR_INSUFFICIENT_OPERATION_PERMISSIONS;
 import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_COUNT;
 import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_ICON_URL;
 import static com.trtc.uikit.livekit.component.gift.service.GiftConstants.GIFT_NAME;
@@ -225,8 +226,12 @@ public class AudienceView extends BasicView {
 
             @Override
             public void onError(TUICommonDefine.Error error, String message) {
-                String msg = mContext.getString(com.trtc.uikit.component.common.R.string.common_message_blocked_by_administrator);
-                ErrorHandler.onError(error, msg);
+                if (error.getValue() == LIVE_SERVER_ERROR_INSUFFICIENT_OPERATION_PERMISSIONS) {
+                    String msg = mContext.getString(com.trtc.uikit.component.common.R.string.common_message_blocked_by_administrator);
+                    ErrorHandler.onError(error, msg);
+                } else {
+                    ErrorHandler.onError(error);
+                }
                 removeAllViews();
                 if (mContext instanceof Activity) {
                     ((Activity) mContext).finish();

@@ -13,6 +13,7 @@ import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
+import com.trtc.uikit.livekit.livestream.manager.module.UserManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +80,9 @@ public class RoomEngineObserver extends TUIRoomObserver {
         LiveStreamLog.info(mTag + " onUserVideoStateChanged:[userId:" + userId + ",hasVideo:" + hasVideo + ",reason:"
                 + reason + "]");
         mLiveManager.getUserManager().onUserVideoStateChanged(userId, streamType, hasVideo, reason);
+        if (userId != null && userId.contains("_feedback_")) {
+            mLiveManager.getUserManager().setRenderMode(userId, UserManager.RENDER_MODE_FIT);
+        }
     }
 
     @Override

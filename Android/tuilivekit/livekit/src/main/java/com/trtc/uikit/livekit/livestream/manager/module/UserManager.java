@@ -10,6 +10,9 @@ import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.state.LiveState;
 import com.trtc.uikit.livekit.livestream.state.UserState;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +21,9 @@ import java.util.Set;
 public class UserManager extends BaseManager {
     private static final String TAG                        = "UserManager";
     private static final int    VOLUME_CAN_HEARD_MIN_LIMIT = 25;
+    public static final  String        RENDER_MODE_FIT            = "fit";
+    public static final  String        RENDER_MODE_FILL           = "fill";
+
 
     public UserManager(LiveState state, ILiveService service) {
         super(state, service);
@@ -27,6 +33,21 @@ public class UserManager extends BaseManager {
     @Override
     public void destroy() {
     }
+
+    public void setRenderMode(String userId, String renderMode) {
+        JSONObject paramObject = new JSONObject();
+        try {
+            paramObject.put("userID", userId);
+            paramObject.put("mode", renderMode);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("api", "setVideoRenderMode");
+            jsonObject.put("params", paramObject);
+            mLiveService.callExperimentalAPI(jsonObject.toString());
+        } catch (JSONException e) {
+
+        }
+    }
+
 
     public void getAudienceList() {
         mLiveService.getUserList(0, new TUIRoomDefine.GetUserListCallback() {

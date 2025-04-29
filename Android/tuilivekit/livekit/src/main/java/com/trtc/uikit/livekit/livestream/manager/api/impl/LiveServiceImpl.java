@@ -909,7 +909,7 @@ public class LiveServiceImpl implements ILiveService {
     @Override
     public void callExperimentalAPI(String jsonStr) {
         LiveStreamLog.info(mTag + " callExperimentalAPI:[jsonStr:" + jsonStr + "]");
-        TUIRoomEngine.callExperimentalAPI(jsonStr);
+        TUIRoomEngine.sharedInstance().callExperimentalAPI(jsonStr, null);
     }
 
     /****************************************** Plugin - Room List *******************************************/

@@ -52,6 +52,7 @@ import com.trtc.uikit.livekit.component.gift.view.GiftBarrageAdapter;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.manager.module.DashboardManager;
+import com.trtc.uikit.livekit.livestream.manager.module.MediaManager;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveBattleManagerObserver;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveStreamObserver;
 import com.trtc.uikit.livekit.livestream.state.BattleState;
@@ -269,7 +270,7 @@ public class AnchorView extends BasicView {
         if (mRoomBehavior == TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM) {
             mLayoutPushing.setVisibility(VISIBLE);
             mUserManager.initSelfUserData();
-            mLiveManager.getMediaManager().setDefaultAudioQualityEx();
+            mLiveManager.getMediaManager().setAudioQualityEx(MediaManager.AUDIO_SCENE_REDUCTION);
             mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
                 @Override
                 public void onSuccess(RoomInfo roomInfo) {
@@ -391,7 +392,7 @@ public class AnchorView extends BasicView {
             roomInfo.roomId = mRoomState.roomId;
             roomInfo.name = mRoomState.roomName.get();
             mUserManager.initSelfUserData();
-            mLiveManager.getMediaManager().setDefaultAudioQualityEx();
+            mLiveManager.getMediaManager().setAudioQualityEx(MediaManager.AUDIO_SCENE_REDUCTION);
             mLiveCoreView.startLiveStream(roomInfo, new GetRoomInfoCallback() {
                 @Override
                 public void onSuccess(RoomInfo roomInfo) {

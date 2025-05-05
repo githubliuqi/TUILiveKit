@@ -26,7 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MediaManager extends BaseManager {
-    private static final String          TAG = "MediaManager";
+    private static final String TAG = "MediaManager";
+
+    public static final int AUDIO_SCENE_REDUCTION = 1;// 语聊降噪场景
+    public static final int AUDIO_SCENE_QUALITY   = 2;// 音乐音质场景
 
     public MediaManager(LiveState state, ILiveService service) {
         super(state, service);
@@ -37,9 +40,9 @@ public class MediaManager extends BaseManager {
         LiveStreamLog.info(TAG + " destroy");
     }
 
-    public void setDefaultAudioQualityEx() {
-        LiveStreamLog.info(TAG + " setDefaultAudioQualityEx");
-        TUIRoomEngine.sharedInstance().getTRTCCloud().callExperimentalAPI("{\"api\":\"setAudioQualityEx\",\"params\":{\"audioScene\":1}}");
+    public void setAudioQualityEx(int quality) {
+        LiveStreamLog.info(TAG + " setAudioQualityEx:" + quality);
+        TUIRoomEngine.sharedInstance().getTRTCCloud().callExperimentalAPI("{\"api\":\"setAudioQualityEx\",\"params\":{\"audioScene\":" + quality + "}}");
         TUIRoomEngine.sharedInstance().getTRTCCloud().setSystemVolumeType(1);
     }
 

@@ -16,6 +16,5 @@ public class IMObserver extends V2TIMSDKListener {
     @Override
     public void onConnectSuccess() {
         Logger.info(mTag + " onConnectSuccess");
-        mVideoLiveManager.getCoGuestManager().onConnectSuccess();
     }
 }

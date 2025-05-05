@@ -507,12 +507,6 @@ public class CoGuestManager extends BaseManager {
         notifyConnectionTerminated(userId);
     }
 
-    public void onConnectSuccess() {
-        if (mUserState.selfInfo.userRole == TUIRoomDefine.Role.ROOM_OWNER) {
-            mVideoLiveService.takeSeat(REQUEST_DEFAULT_INDEX, REQUEST_TIMEOUT, null);
-        }
-    }
-
     private void notifyConnectedUsersUpdated(List<TUIRoomDefine.SeatInfo> seatList,
                                              List<TUIRoomDefine.SeatInfo> seatedList,
                                              List<TUIRoomDefine.SeatInfo> leftList) {

@@ -62,7 +62,7 @@ public class RoomInfoService {
                     @Override
                     public void onError(int code, String desc) {
                         CommonLogger.error("RoomInfo", "RoomInfoService", " getUserFollowInfo failed:errorCode:" + code + ",message:" + desc);
-                        ToastUtil.toastShortMessage(code + "," + desc);
+//                        ToastUtil.toastShortMessage(code + "," + desc);
                     }
                 });
     }
@@ -91,7 +91,7 @@ public class RoomInfoService {
                     @Override
                     public void onError(int code, String desc) {
                         CommonLogger.error("RoomInfo", "RoomInfoService", " checkFollowType failed:errorCode:" + code + ",message:" + desc);
-                        ToastUtil.toastShortMessage(code + "," + desc);
+//                        ToastUtil.toastShortMessage(code + "," + desc);
                     }
 
                 });
@@ -111,7 +111,7 @@ public class RoomInfoService {
                     @Override
                     public void onError(int code, String desc) {
                         CommonLogger.error("RoomInfo", "RoomInfoService", " followUser failed:errorCode:" + code + ",message:" + desc);
-                        ToastUtil.toastShortMessage(code + "," + desc);
+//                        ToastUtil.toastShortMessage(code + "," + desc);
                     }
                 });
     }
@@ -130,7 +130,7 @@ public class RoomInfoService {
                     @Override
                     public void onError(int code, String desc) {
                         CommonLogger.error("RoomInfo", "RoomInfoService", " unfollowUser failed:errorCode:" + code + ",message:" + desc);
-                        ToastUtil.toastShortMessage(code + "," + desc);
+//                        ToastUtil.toastShortMessage(code + "," + desc);
                     }
                 });
     }

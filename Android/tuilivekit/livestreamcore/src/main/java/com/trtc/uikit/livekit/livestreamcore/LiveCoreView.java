@@ -38,6 +38,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleConfig;
 import com.tencent.cloud.tuikit.engine.extension.TUILiveBattleManager.BattleInfo;
@@ -1228,6 +1229,7 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private void addLocalVideoView() {
+        Logger.info("LiveCoreView addLocalVideoView userInfo:" + new Gson().toJson(mUserState.selfInfo));
         LiveStreamView localLiveView = mLocalLiveView == null ? new LiveStreamView(mContext) : mLocalLiveView;
         mLocalLiveView = localLiveView;
         mVideoLiveManager.getMediaManager().setLocalVideoView(localLiveView.getTUIVideoView());
@@ -1260,6 +1262,7 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private void removeLocalVideoView() {
+        Logger.info("LiveCoreView removeLocalVideoView userInfo:" + new Gson().toJson(mUserState.selfInfo));
         LiveStreamView localLiveView = mLocalLiveView;
         if (localLiveView == null) {
             return;
@@ -1273,9 +1276,7 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private void addCoGuestLiveView(UserInfo userInfo) {
-        if (userInfo.userId.equals(mUserState.selfInfo.userId)) {
-            return;
-        }
+        Logger.info("LiveCoreView addCoGuestLiveView userInfo:" + new Gson().toJson(userInfo));
         LiveStreamView liveView = createRemoteLiveViewByUserId(userInfo.userId);
         mVideoLiveManager.getMediaManager().setRemoteVideoView(userInfo.userId,
                 TUIRoomDefine.VideoStreamType.CAMERA_STREAM, liveView.getTUIVideoView());
@@ -1301,17 +1302,15 @@ public class LiveCoreView extends FrameLayout {
         }
     }
 
-    private void removeCoGuestLiveView(UserInfo userInfo) {
-        if (userInfo.userId.equals(mUserState.selfInfo.userId)) {
-            return;
-        }
-        LiveStreamView liveView = mRemoteLiveViewMap.get(userInfo.userId);
+    private void removeCoGuestLiveView(String userId) {
+        Logger.info("LiveCoreView removeCoGuestLiveView userId:" + userId);
+        LiveStreamView liveView = mRemoteLiveViewMap.get(userId);
         if (liveView != null) {
-            mRemoteLiveViewMap.remove(userInfo.userId);
+            mRemoteLiveViewMap.remove(userId);
             mFreeLayout.removeView(liveView);
             mFreeLayout.requestLayout();
         }
-        mVideoViewModelMap.remove(userInfo.userId);
+        mVideoViewModelMap.remove(userId);
     }
 
     private void addCoHostLiveView(ConnectionUser userInfo) {
@@ -1359,15 +1358,26 @@ public class LiveCoreView extends FrameLayout {
 
     private void onCoGuestUserListChange(List<SeatInfo> coGuestUsers) {
         for (SeatInfo seatInfo : coGuestUsers) {
+            if (TextUtils.isEmpty(seatInfo.userId)) {
+                continue;
+            }
             if (!containsItem(mCoGuestUserList, seatInfo, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
                 mCoGuestUserList.add(seatInfo);
-                addCoGuestLiveView(LiveStreamConvert.convertToUserInfo(seatInfo));
+                if (TextUtils.equals(mUserState.selfInfo.userId, seatInfo.userId)) {
+                    addLocalVideoView();
+                } else {
+                    addCoGuestLiveView(LiveStreamConvert.convertToUserInfo(seatInfo));
+                }
             }
         }
         for (SeatInfo seatInfo : mCoGuestUserList) {
             if (!containsItem(coGuestUsers, seatInfo, (o1, o2) -> o1.userId.compareTo(o2.userId))) {
                 mCoGuestUserList.remove(seatInfo);
-                removeCoGuestLiveView(LiveStreamConvert.convertToUserInfo(seatInfo));
+                if (TextUtils.equals(mUserState.selfInfo.userId, seatInfo.userId)) {
+                    removeLocalVideoView();
+                } else {
+                    removeCoGuestLiveView(seatInfo.userId);
+                }
             }
         }
         mBattleContainLayout.setLayout(mFreeLayout.getLayout());

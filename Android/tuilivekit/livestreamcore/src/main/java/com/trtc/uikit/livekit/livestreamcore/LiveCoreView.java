@@ -27,6 +27,7 @@ import static com.trtc.uikit.livekit.livestreamcore.state.RoomState.LiveStatus.P
 import static com.trtc.uikit.livekit.livestreamcore.state.RoomState.LiveStatus.PUSHING;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -105,6 +106,7 @@ public class LiveCoreView extends FrameLayout {
     private       Context                                      mContext;
     private       FreeLayout                                   mFreeLayout;
     private       FreeLayout                                   mViewInfoLayout;
+    private final Point                                        mViewInfoLayoutSize      = new Point(0, 0);
     private       BattleContainLayout                          mBattleContainLayout;
     private       LiveStreamManager                            mVideoLiveManager;
     private       RoomState                                    mRoomState;
@@ -1204,6 +1206,17 @@ public class LiveCoreView extends FrameLayout {
         mViewInfoLayout.setVisibility(GONE);
         FrameLayout.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(mViewInfoLayout, layoutParams);
+        mViewInfoLayout.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            int layoutWidth = mViewInfoLayout.getMeasuredWidth();
+            int layoutHeight = mViewInfoLayout.getMeasuredHeight();
+            if (layoutWidth != mViewInfoLayoutSize.x || layoutHeight != mViewInfoLayoutSize.y) {
+                Logger.info("LiveCoreView ViewInfoLayout old w:" + mViewInfoLayoutSize.x + ",h:" + mViewInfoLayoutSize.y);
+                Logger.info("LiveCoreView ViewInfoLayout new w:" + layoutWidth + ",h:" + layoutHeight);
+                mViewInfoLayoutSize.set(layoutWidth, layoutHeight);
+                String layoutInfo = mVideoLiveManager.getViewState().viewLayoutInCdnMode.get();
+                mVideoLiveManager.getViewManager().updateViewLayoutInCdnMode(layoutInfo);
+            }
+        });
     }
 
     private void initBattleContainLayout() {
@@ -1363,6 +1376,7 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private void onVideoViewLayoutChange(String viewLayout) {
+        Logger.info("LiveCoreView onVideoViewLayoutChange viewLayout:" + viewLayout);
         if (TextUtils.isEmpty(viewLayout)) {
             mViewInfoLayout.setVisibility(GONE);
             mViewInfoLayout.removeAllViews();

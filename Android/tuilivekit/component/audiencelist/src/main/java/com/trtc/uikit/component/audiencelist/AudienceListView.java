@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.trtc.uikit.component.audiencelist.service.AudienceListService;
 import com.trtc.uikit.component.audiencelist.store.AudienceListState;
 import com.trtc.uikit.component.audiencelist.view.AudienceListPopupDialog;
 import com.trtc.uikit.component.audiencelist.view.adapter.AudienceListIconAdapter;
+import com.trtc.uikit.component.common.CommonLogger;
 import com.trtc.uikit.component.common.DataReporter;
 
 import java.util.LinkedHashSet;
@@ -35,6 +37,8 @@ public class AudienceListView extends FrameLayout {
     private static final int ROOM_MAX_SHOW_USER_COUNT                            = 100;
     private static final int LIVEKIT_METRICS_PANEL_SHOW_LIVE_ROOM_AUDIENCE_LIST  = 190010;
     private static final int LIVEKIT_METRICS_PANEL_SHOW_VOICE_ROOM_AUDIENCE_LIST = 191009;
+
+    private static final CommonLogger LOGGER = CommonLogger.getCommonLogger("AudienceListView");
 
     private final Context                                         mContext;
     private       RecyclerView                                    mRecycleAudienceList;
@@ -178,9 +182,13 @@ public class AudienceListView extends FrameLayout {
     private void updateAudienceCount() {
         int userCount = mAudienceListState.audienceCount.get();
         int listSize = mAudienceListState.audienceList.get().size();
+        LOGGER.info("updateAudienceCount,userCount:" + userCount + ",listSize:" + listSize);
         if (userCount > ROOM_MAX_SHOW_USER_COUNT) {
             setUserCount(userCount);
         } else {
+            if (listSize == 0 && userCount > 0) {
+                LOGGER.warn(Log.getStackTraceString(new Exception("ignore exception")));
+            }
             setUserCount(listSize);
         }
     }

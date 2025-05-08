@@ -11,6 +11,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class AudienceListService {
+    private static final CommonLogger LOGGER = CommonLogger.getCommonLogger("AudienceListService");
+
     public final AudienceListState mAudienceListState = new AudienceListState();
 
     public void initRoomInfo(String roomId) {
@@ -23,6 +25,7 @@ public class AudienceListService {
                         getAudienceList(new TUIRoomDefine.GetUserListCallback() {
                             @Override
                             public void onSuccess(TUIRoomDefine.UserListResult userListResult) {
+                                LOGGER.info("getAudienceList onSuccess, size:" + userListResult.userInfoList.size());
                                 if (!userListResult.userInfoList.isEmpty()) {
                                     mAudienceListState.audienceList.get().clear();
                                     Set<TUIRoomDefine.UserInfo> userInfoSet = new LinkedHashSet<>();
@@ -38,7 +41,7 @@ public class AudienceListService {
 
                             @Override
                             public void onError(TUICommonDefine.Error error, String message) {
-                                CommonLogger.error("AudienceList", "AudienceListService", " getAudienceList failed:error:" + error + ",errorCode:" + error.getValue() + ",message:" + message);
+                                LOGGER.info("getAudienceList onError:" + error + ",errorCode:" + error.getValue() + ",message:" + message);
                                 ErrorLocalized.onError(error);
                             }
                         });
@@ -46,7 +49,7 @@ public class AudienceListService {
 
                     @Override
                     public void onError(TUICommonDefine.Error error, String message) {
-                        CommonLogger.error("AudienceList", "AudienceListService", " fetchRoomInfo failed:error:" + error + ",errorCode:" + error.getValue() + ",message:" + message);
+                        LOGGER.info("fetchRoomInfo onError:" + error + ",errorCode:" + error.getValue() + ",message:" + message);
                         ErrorLocalized.onError(error);
                     }
                 });

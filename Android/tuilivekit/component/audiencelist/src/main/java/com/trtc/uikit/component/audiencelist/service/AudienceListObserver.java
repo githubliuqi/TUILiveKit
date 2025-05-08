@@ -10,6 +10,7 @@ import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.trtc.uikit.component.audiencelist.store.AudienceListState;
+import com.trtc.uikit.component.common.CommonLogger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class AudienceListObserver extends TUIRoomObserver {
+    private static final CommonLogger LOGGER = CommonLogger.getCommonLogger("AudienceListObserver");
+
     protected AudienceListState mAudienceListState;
 
     public AudienceListObserver(AudienceListState audienceListState) {
@@ -75,6 +78,7 @@ public class AudienceListObserver extends TUIRoomObserver {
 
             @Override
             public void onError(int code, String desc) {
+                LOGGER.error("getUsersInfo onError:" + code + "," + desc);
                 addUser(audienceUser);
             }
 
@@ -91,6 +95,7 @@ public class AudienceListObserver extends TUIRoomObserver {
                     audienceList.remove(oldUser);
                 }
                 audienceList.add(user);
+                LOGGER.info("addUser,userId:" + user.userId + ",listSize:" + audienceList.size());
                 mAudienceListState.audienceList.set(audienceList);
             }
         });
@@ -103,6 +108,7 @@ public class AudienceListObserver extends TUIRoomObserver {
             TUIRoomDefine.UserInfo audienceUser = iterator.next();
             if (audienceUser.userId.equals(userInfo.userId)) {
                 iterator.remove();
+                LOGGER.info("removeUser,userId:" + userInfo.userId + ",listSize:" + mAudienceListState.audienceList.get().size());
                 mAudienceListState.audienceList.notifyDataChanged();
                 break;
             }

@@ -1,7 +1,8 @@
 package com.trtc.uikit.livekit.livestreamcore.manager.module;
 
 import static com.tencent.cloud.tuikit.engine.room.TUIRoomDefine.VideoQuality.Q_1080P;
-import static com.tencent.liteav.beauty.TXBeautyManager.TXBeautyStyleSmooth;
+
+import android.text.TextUtils;
 
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine;
 import com.tencent.cloud.tuikit.engine.common.TUIVideoView;
@@ -15,7 +16,9 @@ import com.trtc.uikit.livekit.livestreamcore.manager.api.ILiveStream;
 import com.trtc.uikit.livekit.livestreamcore.state.LiveStreamState;
 import com.trtc.uikit.livekit.livestreamcore.state.MediaState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MediaManager extends BaseManager {
@@ -119,7 +122,6 @@ public class MediaManager extends BaseManager {
     }
 
     public void setLocalVideoView(TUIVideoView view) {
-        addLocalVideoListener(view);
         mVideoLiveService.setLocalVideoView(view);
     }
 
@@ -198,6 +200,38 @@ public class MediaManager extends BaseManager {
         boolean isFrontCamera = mMediaState.isFrontCamera.get();
         mVideoLiveService.switchCamera(!isFrontCamera);
         mMediaState.isFrontCamera.set(!isFrontCamera);
+    }
+
+    public void onSeatListChanged(List<TUIRoomDefine.SeatInfo> seatList) {
+        List<TUIRoomDefine.SeatInfo> newList = new ArrayList<>(seatList.size());
+        for (TUIRoomDefine.SeatInfo info : seatList) {
+            if (!TextUtils.isEmpty(info.userId)) {
+                newList.add(info);
+            }
+        }
+        boolean isSelfInSeat = false;
+        for (TUIRoomDefine.SeatInfo seatInfo : newList) {
+            if (TextUtils.equals(seatInfo.userId, mVideoLiveState.userState.selfInfo.userId)) {
+                isSelfInSeat = true;
+            }
+        }
+        if (isSelfInSeat) {
+            MediaState.VideoEncParams.VideoEncType targetEncType = newList.size() > 1
+                    ? MediaState.VideoEncParams.VideoEncType.SMALL
+                    : MediaState.VideoEncParams.VideoEncType.BIG;
+            changeVideoEncParams(targetEncType);
+        } else {
+            mVideoLiveState.mediaState.isCameraOpened.set(false);
+            mVideoLiveState.mediaState.isMicrophoneOpened.set(false);
+        }
+    }
+
+    public void updateVideoEncParams() {
+        if (TextUtils.equals(mVideoLiveState.userState.selfInfo.userId, mVideoLiveState.roomState.ownerInfo.userId)) {
+            changeVideoEncParams(MediaState.VideoEncParams.VideoEncType.BIG);
+        } else {
+            changeVideoEncParams(MediaState.VideoEncParams.VideoEncType.SMALL);
+        }
     }
 
     public void requestPermissions(boolean openCamera, TUIRoomDefine.ActionCallback callback) {
@@ -287,29 +321,17 @@ public class MediaManager extends BaseManager {
         enableUltimate(false);
         enableH265(false);
 
+        changeVideoEncParams(MediaState.VideoEncParams.VideoEncType.BIG);
         TUIRoomDefine.RoomVideoEncoderParams roomVideoEncoderParams = new TUIRoomDefine.RoomVideoEncoderParams();
         roomVideoEncoderParams.videoResolution = Q_1080P;
-        roomVideoEncoderParams.bitrate = 6000;
-        roomVideoEncoderParams.fps = 30;
+        roomVideoEncoderParams.bitrate = 4000;
+        roomVideoEncoderParams.fps = 20;
         roomVideoEncoderParams.resolutionMode = TUIRoomDefine.ResolutionMode.PORTRAIT;
         mVideoLiveService.updateVideoQualityEx(roomVideoEncoderParams);
     }
 
-    private void addLocalVideoListener(TUIVideoView view) {
-        if (view != null) {
-            final int screenWidth = view.getContext().getResources().getDisplayMetrics().widthPixels;
-
-            view.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-                MediaState.VideoEncParams.VideoEncType targetEncType = (double) view.getWidth() / screenWidth > 0.5 ?
-                        MediaState.VideoEncParams.VideoEncType.BIG : MediaState.VideoEncParams.VideoEncType.SMALL;
-                if (mMediaState.videoEncParams.currentEncType != targetEncType) {
-                    changeVideoEncParams(targetEncType);
-                }
-            });
-        }
-    }
-
     private void changeVideoEncParams(MediaState.VideoEncParams.VideoEncType encType) {
+        Logger.info(TAG + " changeVideoEncParams:" + encType);
         mMediaState.videoEncParams.currentEncType = encType;
         if (encType == MediaState.VideoEncParams.VideoEncType.BIG) {
             updateVideoQualityEx(mMediaState.videoEncParams.big);
@@ -339,15 +361,8 @@ public class MediaManager extends BaseManager {
     }
 
     private void openLocalCameraByService(TUIRoomDefine.ActionCallback callback) {
-        if (mVideoLiveState.mediaState.isCameraOpened.get()) {
-            Logger.error(TAG + " camera is opened, no need to open again");
-            if (callback != null) {
-                callback.onError(TUICommonDefine.Error.PERMISSION_DENIED, "camera not permissions");
-            }
-            return;
-        }
         boolean isFront = mVideoLiveState.mediaState.isFrontCamera.get();
-        TUIRoomDefine.VideoQuality quality = Q_1080P;
+        TUIRoomDefine.VideoQuality quality = mMediaState.videoEncParams.getCurrentEnc().videoResolution;
         mVideoLiveService.openLocalCamera(isFront, quality, new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
@@ -370,9 +385,5 @@ public class MediaManager extends BaseManager {
     private void initLivingConfig() {
         mVideoLiveService.enableGravitySensor(true);
         mVideoLiveService.setVideoResolutionMode(TUIRoomDefine.ResolutionMode.PORTRAIT);
-        mVideoLiveService.setBeautyStyle(TXBeautyStyleSmooth);
-        mVideoLiveService.updateVideoQuality(Q_1080P);
-        mVideoLiveService.updateAudioQuality(TUIRoomDefine.AudioQuality.DEFAULT);
-        mVideoLiveService.setCameraMirror(mMediaState.isMirror.get());
     }
 }

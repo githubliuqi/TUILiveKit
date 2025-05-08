@@ -1056,6 +1056,7 @@ public class LiveCoreView extends FrameLayout {
         mVideoLiveManager.getRoomManager().joinLive(roomId, new TUIRoomDefine.GetRoomInfoCallback() {
             @Override
             public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
+                mVideoLiveManager.getMediaManager().updateVideoEncParams();
                 mVideoLiveManager.getUserManager().updateOwnerInfo(roomInfo);
                 mVideoLiveManager.getCoGuestManager().initConnectedGuestList();
                 if (callback != null) {

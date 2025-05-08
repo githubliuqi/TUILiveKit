@@ -664,7 +664,7 @@ public class LiveStreamImpl implements ILiveStream {
 
     @Override
     public void updateVideoQualityEx(TUIRoomDefine.RoomVideoEncoderParams videoEncParam) {
-        Logger.info(mTag + " updateVideoQualityEx:[videoEncParam:" + videoEncParam + "]");
+        Logger.info(mTag + " updateVideoQualityEx:[videoEncParam:" + new Gson().toJson(videoEncParam) + "]");
         mTUIRoomEngine.updateVideoQualityEx(TUIRoomDefine.VideoStreamType.CAMERA_STREAM, videoEncParam);
     }
 

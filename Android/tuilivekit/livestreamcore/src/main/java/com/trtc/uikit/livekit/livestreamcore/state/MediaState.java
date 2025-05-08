@@ -40,14 +40,14 @@ public class MediaState {
         public VideoEncParams() {
             big = new RoomVideoEncoderParams();
             big.videoResolution = TUIRoomDefine.VideoQuality.Q_1080P;
-            big.bitrate = 6000;
-            big.fps = 30;
+            big.bitrate = 4000;
+            big.fps = 20;
             big.resolutionMode = TUIRoomDefine.ResolutionMode.PORTRAIT;
 
             small = new RoomVideoEncoderParams();
             small.videoResolution = TUIRoomDefine.VideoQuality.Q_540P;
             small.bitrate = 1500;
-            small.fps = 30;
+            small.fps = 20;
             small.resolutionMode = TUIRoomDefine.ResolutionMode.PORTRAIT;
         }
 

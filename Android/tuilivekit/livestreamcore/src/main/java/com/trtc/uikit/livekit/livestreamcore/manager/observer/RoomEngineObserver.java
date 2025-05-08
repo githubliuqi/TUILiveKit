@@ -34,6 +34,7 @@ public class RoomEngineObserver extends TUIRoomObserver {
         Logger.info(mTag + " onSeatListChanged:[seatList:" + new Gson().toJson(seatList)
                 + ",seatedList:" + new Gson().toJson(seatedList) + ",leftList:" + new Gson().toJson(leftList) + "]");
         mVideoLiveManager.getCoGuestManager().onSeatListChanged(seatList, seatedList, leftList);
+        mVideoLiveManager.getMediaManager().onSeatListChanged(seatList);
     }
 
     @Override

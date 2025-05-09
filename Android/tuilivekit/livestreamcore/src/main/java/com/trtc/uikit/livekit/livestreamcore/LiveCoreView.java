@@ -311,11 +311,11 @@ public class LiveCoreView extends FrameLayout {
         mVideoLiveManager.getBattleManager().requestBattle(config, userIdList, timeout, callback);
     }
 
-    public void cancelBattle(String battleId, List<String> userIdList, TUIRoomDefine.ActionCallback callback) {
+    public void cancelBattle(String battleId, List<String> userIdList, ActionCallback callback) {
         mVideoLiveManager.getBattleManager().cancelRequest(battleId, userIdList, callback);
     }
 
-    public void respondToBattle(String battleId, boolean isAccepted, TUIRoomDefine.ActionCallback callback) {
+    public void respondToBattle(String battleId, boolean isAccepted, ActionCallback callback) {
         if (isAccepted) {
             mVideoLiveManager.getBattleManager().acceptBattle(battleId, callback);
         } else {
@@ -323,17 +323,17 @@ public class LiveCoreView extends FrameLayout {
         }
     }
 
-    public void terminateBattle(String battleId, TUIRoomDefine.ActionCallback callback) {
+    public void terminateBattle(String battleId, ActionCallback callback) {
         if (!TextUtils.isEmpty(battleId)) {
             mVideoLiveManager.getBattleManager().exitBattle(battleId, callback);
         }
     }
 
-    public void registerBattleObserver(LiveCoreViewDefine.BattleObserver observer) {
+    public void registerBattleObserver(BattleObserver observer) {
         mBattleObserver.add(observer);
     }
 
-    public void unregisterBattleObserver(LiveCoreViewDefine.BattleObserver observer) {
+    public void unregisterBattleObserver(BattleObserver observer) {
         mBattleObserver.remove(observer);
     }
 
@@ -360,21 +360,21 @@ public class LiveCoreView extends FrameLayout {
         return mVideoLiveManager.getMediaManager();
     }
 
-    private void callbackConnectedUsersUpdated(List<TUIRoomDefine.SeatInfo> userList,
-                                               List<TUIRoomDefine.SeatInfo> joinList,
-                                               List<TUIRoomDefine.SeatInfo> leaveList) {
+    private void callbackConnectedUsersUpdated(List<SeatInfo> userList,
+                                               List<SeatInfo> joinList,
+                                               List<SeatInfo> leaveList) {
         List<UserInfo> userInfoList = new ArrayList<>();
-        for (TUIRoomDefine.SeatInfo coGuestUser : userList) {
+        for (SeatInfo coGuestUser : userList) {
             userInfoList.add(LiveStreamConvert.convertToUserInfo(coGuestUser));
         }
 
         List<UserInfo> joinUserInfoList = new ArrayList<>();
-        for (TUIRoomDefine.SeatInfo joinUser : joinList) {
+        for (SeatInfo joinUser : joinList) {
             joinUserInfoList.add(LiveStreamConvert.convertToUserInfo(joinUser));
         }
 
         List<UserInfo> leaveUserInfoList = new ArrayList<>();
-        for (TUIRoomDefine.SeatInfo leaveUser : leaveList) {
+        for (SeatInfo leaveUser : leaveList) {
             leaveUserInfoList.add(LiveStreamConvert.convertToUserInfo(leaveUser));
         }
 
@@ -441,7 +441,7 @@ public class LiveCoreView extends FrameLayout {
         }
     }
 
-    private void callbackUserConnectionExited(TUIRoomDefine.SeatInfo seatInfo) {
+    private void callbackUserConnectionExited(SeatInfo seatInfo) {
         if (!mConnectionObserver.isEmpty()) {
             for (ConnectionObserver observer : mConnectionObserver) {
                 observer.onUserConnectionExited(LiveStreamConvert.convertToUserInfo(seatInfo));
@@ -610,9 +610,9 @@ public class LiveCoreView extends FrameLayout {
 
         mVideoLiveManager.getCoGuestManager().setCoGuestObserver(new CoGuestManager.CoGuestObserver() {
             @Override
-            public void onConnectedUsersUpdated(List<TUIRoomDefine.SeatInfo> userList,
-                                                List<TUIRoomDefine.SeatInfo> joinList,
-                                                List<TUIRoomDefine.SeatInfo> leaveList) {
+            public void onConnectedUsersUpdated(List<SeatInfo> userList,
+                                                List<SeatInfo> joinList,
+                                                List<SeatInfo> leaveList) {
                 callbackConnectedUsersUpdated(userList, joinList, leaveList);
             }
 
@@ -622,7 +622,7 @@ public class LiveCoreView extends FrameLayout {
             }
 
             @Override
-            public void onUserConnectionCancelled(TUIRoomDefine.Request request, TUIRoomDefine.UserInfo operateUser) {
+            public void onUserConnectionCancelled(TUIRoomDefine.Request request, UserInfo operateUser) {
                 callbackUserConnectionCancelled(operateUser.userId);
             }
 
@@ -636,7 +636,7 @@ public class LiveCoreView extends FrameLayout {
             }
 
             @Override
-            public void onUserConnectionExited(TUIRoomDefine.SeatInfo seatInfo) {
+            public void onUserConnectionExited(SeatInfo seatInfo) {
                 callbackUserConnectionExited(seatInfo);
 
             }
@@ -687,7 +687,6 @@ public class LiveCoreView extends FrameLayout {
             @Override
             public void onBattleStarted(BattleInfo battleInfo) {
                 removeBattleView();
-
                 boolean isAudience = mVideoLiveManager.getCoHostManager().isAudience();
                 Logger.info("LiveCoreView onBattleStarted, hasMixStreamUser:" + isAudience);
                 if (isAudience) {
@@ -1005,10 +1004,10 @@ public class LiveCoreView extends FrameLayout {
         mVideoLiveManager.getRoomManager().initCreateRoomState(roomInfo.roomId, roomInfo.maxSeatCount);
         mVideoLiveManager.getUserManager().initSelfUserData();
 
-        mVideoLiveManager.getRoomManager().startLive(roomInfo, new TUIRoomDefine.GetRoomInfoCallback() {
+        mVideoLiveManager.getRoomManager().startLive(roomInfo, new GetRoomInfoCallback() {
 
             @Override
-            public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
+            public void onSuccess(RoomInfo roomInfo) {
                 mVideoLiveManager.getUserManager().updateOwnerInfo(roomInfo);
                 mVideoLiveManager.getCoGuestManager().initConnectedGuestList();
                 if (mUserState.selfInfo.userRole == TUIRoomDefine.Role.ROOM_OWNER) {
@@ -1053,9 +1052,9 @@ public class LiveCoreView extends FrameLayout {
 
     private void joinLive(String roomId, GetRoomInfoCallback callback) {
         mVideoLiveManager.getUserManager().initSelfUserData();
-        mVideoLiveManager.getRoomManager().joinLive(roomId, new TUIRoomDefine.GetRoomInfoCallback() {
+        mVideoLiveManager.getRoomManager().joinLive(roomId, new GetRoomInfoCallback() {
             @Override
-            public void onSuccess(TUIRoomDefine.RoomInfo roomInfo) {
+            public void onSuccess(RoomInfo roomInfo) {
                 mVideoLiveManager.getMediaManager().updateVideoEncParams();
                 mVideoLiveManager.getUserManager().updateOwnerInfo(roomInfo);
                 mVideoLiveManager.getCoGuestManager().initConnectedGuestList();
@@ -1145,11 +1144,21 @@ public class LiveCoreView extends FrameLayout {
                     @Override
                     public void onAccepted(String requestId, String userId) {
                         if (mCoGuestState.openCameraOnCoGuest) {
-                            startCamera(mMediaState.isFrontCamera.get(), null);
+                            startCamera(mMediaState.isFrontCamera.get(), new ActionCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    startMicrophone(null);
+                                }
+
+                                @Override
+                                public void onError(TUICommonDefine.Error error, String message) {
+                                    startMicrophone(null);
+                                }
+                            });
                         } else {
+                            startMicrophone(null);
                             addLocalVideoView();
                         }
-                        startMicrophone(null);
                         callbackUserConnectionAccepted(userId);
                     }
 
@@ -1199,14 +1208,14 @@ public class LiveCoreView extends FrameLayout {
 
     private void initVideoLayout() {
         mFreeLayout = new GridLayout(mContext);
-        FrameLayout.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(mFreeLayout, layoutParams);
     }
 
     private void initViewInfoLayout() {
         mViewInfoLayout = new FreeLayout(mContext);
         mViewInfoLayout.setVisibility(GONE);
-        FrameLayout.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(mViewInfoLayout, layoutParams);
         mViewInfoLayout.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             int layoutWidth = mViewInfoLayout.getMeasuredWidth();
@@ -1225,7 +1234,7 @@ public class LiveCoreView extends FrameLayout {
         mBattleContainLayout = new BattleContainLayout(mContext);
         mBattleContainLayout.setLayout(mFreeLayout.getLayout());
         mBattleContainLayout.setVisibility(GONE);
-        FrameLayout.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(mBattleContainLayout, layoutParams);
     }
 
@@ -1238,7 +1247,7 @@ public class LiveCoreView extends FrameLayout {
             mFreeLayout.addView(localLiveView);
             if (mVideoViewAdapter != null) {
                 View coGuestWidgetsView = mVideoViewAdapter.createCoGuestView(mUserState.selfInfo);
-                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 if (coGuestWidgetsView != null) {
                     localLiveView.addView(coGuestWidgetsView, params);
@@ -1291,7 +1300,7 @@ public class LiveCoreView extends FrameLayout {
                 if (widgetsView == null) {
                     return;
                 }
-                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 liveView.addView(widgetsView, params);
 
@@ -1324,7 +1333,7 @@ public class LiveCoreView extends FrameLayout {
         if (mFreeLayout.indexOfChild(liveView) < 0) {
             mFreeLayout.addView(liveView);
             if (mVideoViewAdapter != null) {
-                LiveCoreViewDefine.CoHostUser coHostUser = convertToCoHostUser(userInfo,
+                CoHostUser coHostUser = convertToCoHostUser(userInfo,
                         mUserState.hasVideoStreamUserList.get().contains(userInfo.userId),
                         mUserState.hasAudioStreamUserList.get().contains(userInfo.userId));
 
@@ -1332,7 +1341,7 @@ public class LiveCoreView extends FrameLayout {
                 if (widgetsView == null) {
                     return;
                 }
-                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 liveView.addView(widgetsView, params);
 
@@ -1403,17 +1412,17 @@ public class LiveCoreView extends FrameLayout {
         mBattleContainLayout.setLayout(videoLayoutConfig.layoutJson);
         mBattleContainLayout.setViewCount(viewInfoList.size());
         if (viewInfoList.size() == 1) {
-            FrameLayout.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             mViewInfoLayout.setLayoutParams(params);
             mBattleContainLayout.resize(mFreeLayout.getMeasuredWidth(), mFreeLayout.getMeasuredHeight());
         } else if (viewInfoList.size() > 1) {
-            FrameLayout.LayoutParams params = (LayoutParams) mViewInfoLayout.getLayoutParams();
+            LayoutParams params = (LayoutParams) mViewInfoLayout.getLayoutParams();
             params.height = (int) (mFreeLayout.getMeasuredWidth() * (1.0 * canvas.height / canvas.width));
             params.topMargin = (mFreeLayout.getMeasuredHeight() - params.height) / 2;
             mViewInfoLayout.setLayoutParams(params);
             mBattleContainLayout.resize(mFreeLayout.getMeasuredWidth(), params.height);
 
-            FrameLayout.LayoutParams battleParams = (LayoutParams) mBattleContainLayout.getLayoutParams();
+            LayoutParams battleParams = (LayoutParams) mBattleContainLayout.getLayoutParams();
             battleParams.topMargin += params.topMargin;
             mBattleContainLayout.setLayoutParams(battleParams);
         }
@@ -1443,11 +1452,11 @@ public class LiveCoreView extends FrameLayout {
             if (mVideoViewAdapter == null) {
                 return;
             }
-            TUIRoomDefine.UserInfo userInfo = LiveStreamConvert.convertToUserInfo(info);
+            UserInfo userInfo = LiveStreamConvert.convertToUserInfo(info);
             if (mCoHostState.connectedUserList.get().isEmpty()) {
                 View widgetsView = mVideoViewAdapter.createCoGuestView(userInfo);
                 if (widgetsView != null) {
-                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    LayoutParams params = new LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     frameLayout.addView(widgetsView, params);
                     VideoViewModel videoViewModel = new VideoViewModel();
@@ -1459,7 +1468,7 @@ public class LiveCoreView extends FrameLayout {
                 CoHostUser coHostUser = LiveStreamConvert.convertToCoHostUser(userInfo, mRoomState.roomId, true, true);
                 View widgetsView = mVideoViewAdapter.createCoHostView(coHostUser);
                 if (widgetsView != null) {
-                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    LayoutParams params = new LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     frameLayout.addView(widgetsView, params);
                     VideoViewModel videoViewModel = new VideoViewModel();
@@ -1472,7 +1481,7 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private void removeVideoLayoutView(VideoViewInfo info) {
-        TUIRoomDefine.UserInfo userInfo = LiveStreamConvert.convertToUserInfo(info);
+        UserInfo userInfo = LiveStreamConvert.convertToUserInfo(info);
         FrameLayout frameLayout = mVideoLayoutViewMap.remove(userInfo.userId);
         mVideoViewModelMap.remove(userInfo.userId);
         mBattleViewInfoMap.remove(userInfo.userId);
@@ -1538,7 +1547,7 @@ public class LiveCoreView extends FrameLayout {
             battleViewInfo.battleUser = battleUser;
             battleViewInfo.battleView = widgetsView;
             mBattleViewInfoMap.put(battleUser.userId, battleViewInfo);
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
             itemView.addView(widgetsView, params);
         }
@@ -1559,7 +1568,7 @@ public class LiveCoreView extends FrameLayout {
             if (widgetsView == null) {
                 return;
             }
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
             containerView.addView(widgetsView, params);
         }
@@ -1633,9 +1642,9 @@ public class LiveCoreView extends FrameLayout {
     }
 
     private static class VideoViewModel {
-        LiveCoreViewDefine.CoHostUser coHostUser;
-        TUIRoomDefine.UserInfo        coGuestUser;
-        View                          userView;
+        CoHostUser coHostUser;
+        UserInfo   coGuestUser;
+        View       userView;
     }
 
     private static class BattleViewInfo {

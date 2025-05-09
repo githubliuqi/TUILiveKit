@@ -264,8 +264,17 @@ public class AnchorView extends BasicView {
         });
 
         boolean isFrontCamera = mLiveCoreView.getMediaManager().mMediaState.isFrontCamera.get();
-        mLiveCoreView.startCamera(isFrontCamera, null);
-        mLiveCoreView.startMicrophone(null);
+        mLiveCoreView.startCamera(isFrontCamera, new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                mLiveCoreView.startMicrophone(null);
+            }
+
+            @Override
+            public void onError(TUICommonDefine.Error error, String message) {
+                mLiveCoreView.startMicrophone(null);
+            }
+        });
         updateLocalAudioMuteState();
         if (mRoomBehavior == TUILiveRoomAnchorFragment.RoomBehavior.ENTER_ROOM) {
             mLayoutPushing.setVisibility(VISIBLE);

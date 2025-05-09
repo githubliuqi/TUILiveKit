@@ -10,6 +10,7 @@ import com.tencent.cloud.tuikit.engine.room.TUIRoomDefine;
 import com.tencent.qcloud.tuicore.TUIConfig;
 import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.permission.PermissionCallback;
+import com.trtc.tuikit.common.system.ContextProvider;
 import com.trtc.uikit.livekit.livestreamcore.common.utils.Logger;
 import com.trtc.uikit.livekit.livestreamcore.common.utils.PermissionRequest;
 import com.trtc.uikit.livekit.livestreamcore.manager.api.ILiveStream;
@@ -92,25 +93,16 @@ public class MediaManager extends BaseManager {
             openLocalCameraByService(callback);
             return;
         }
-        Logger.info(TAG + " requestPermissions:[]");
-        PermissionRequest.requestPermissions(TUIConfig.getAppContext(), new PermissionCallback() {
+        requestCameraPermissions(new TUIRoomDefine.ActionCallback() {
             @Override
-            public void onRequesting() {
-                Logger.info(TAG + " requestPermissions:[onRequesting]");
-            }
-
-            @Override
-            public void onGranted() {
-                Logger.info(TAG + " requestPermissions:[onGranted]");
-                mVideoLiveState.mediaState.hasCameraPermission.set(true);
+            public void onSuccess() {
                 openLocalCameraByService(callback);
             }
 
             @Override
-            public void onDenied() {
-                Logger.error(TAG + " requestPermissions:[onDenied]");
+            public void onError(TUICommonDefine.Error error, String s) {
                 if (callback != null) {
-                    callback.onError(TUICommonDefine.Error.PERMISSION_DENIED, "requestPermissions:[onDenied]");
+                    callback.onError(error, s);
                 }
             }
         });
@@ -145,25 +137,16 @@ public class MediaManager extends BaseManager {
             return;
         }
         Logger.info(TAG + " requestMicrophonePermissions:[]");
-        PermissionRequest.requestMicrophonePermissions(TUIConfig.getAppContext(), new PermissionCallback() {
+        requestMicrophonePermissions(new TUIRoomDefine.ActionCallback() {
             @Override
-            public void onRequesting() {
-                Logger.info(TAG + " requestMicrophonePermissions:[onRequesting}");
-            }
-
-            @Override
-            public void onGranted() {
-                Logger.info(TAG + " requestMicrophonePermissions:[onGranted]");
-                mVideoLiveState.mediaState.hasMicrophonePermission.set(true);
+            public void onSuccess() {
                 openLocalMicrophoneByService(callback);
             }
 
             @Override
-            public void onDenied() {
-                Logger.warn(TAG + " requestMicrophonePermissions:[onDenied]");
+            public void onError(TUICommonDefine.Error error, String s) {
                 if (callback != null) {
-                    callback.onError(TUICommonDefine.Error.PERMISSION_DENIED, "requestMicrophonePermissions:[onDenied"
-                            + "]");
+                    callback.onError(error, s);
                 }
             }
         });
@@ -235,68 +218,69 @@ public class MediaManager extends BaseManager {
     }
 
     public void requestPermissions(boolean openCamera, TUIRoomDefine.ActionCallback callback) {
-        if (mMediaState.hasMicrophonePermission.get()) {
-            if (openCamera) {
-                if (mMediaState.hasCameraPermission.get()) {
+        requestMicrophonePermissions(new TUIRoomDefine.ActionCallback() {
+            @Override
+            public void onSuccess() {
+                if (openCamera) {
+                    requestCameraPermissions(callback);
+                } else {
                     if (callback != null) {
                         callback.onSuccess();
                     }
-                } else {
-                    requestPermissions(callback);
-                }
-            } else {
-                if (callback != null) {
-                    callback.onSuccess();
-                }
-            }
-        } else {
-            if (openCamera) {
-                requestPermissions(callback);
-            } else {
-                requestMicrophonePermissions(callback);
-            }
-        }
-    }
-
-    private void requestMicrophonePermissions(TUIRoomDefine.ActionCallback callback) {
-        Logger.info(TAG + " requestMicrophonePermissions:[]");
-        PermissionRequest.requestMicrophonePermissions(TUIConfig.getAppContext(), new PermissionCallback() {
-            @Override
-            public void onRequesting() {
-                Logger.info(TAG + " requestMicrophonePermissions:[onRequesting}");
-            }
-
-            @Override
-            public void onGranted() {
-                Logger.info(TAG + " requestMicrophonePermissions:[onGranted]");
-                mVideoLiveState.mediaState.hasMicrophonePermission.set(true);
-                if (callback != null) {
-                    callback.onSuccess();
                 }
             }
 
             @Override
-            public void onDenied() {
-                Logger.warn(TAG + " requestMicrophonePermissions:[onDenied]");
+            public void onError(TUICommonDefine.Error error, String message) {
                 if (callback != null) {
-                    callback.onError(TUICommonDefine.Error.MICROPHONE_NOT_AUTHORIZED, "requestMicrophonePermissions:[onDenied]");
+                    callback.onError(error, message);
                 }
             }
         });
     }
 
-    private void requestPermissions(TUIRoomDefine.ActionCallback callback) {
-        Logger.info(TAG + " requestPermissions:[]");
-        PermissionRequest.requestPermissions(TUIConfig.getAppContext(), new PermissionCallback() {
+    private void requestMicrophonePermissions(TUIRoomDefine.ActionCallback callback) {
+        Logger.info(TAG + " requestMicrophonePermissions:[]");
+        PermissionRequest.requestMicrophonePermissions(ContextProvider.getApplicationContext(),
+                new PermissionCallback() {
+                    @Override
+                    public void onRequesting() {
+                        Logger.info(TAG + " requestMicrophonePermissions:[onRequesting}");
+                    }
+
+                    @Override
+                    public void onGranted() {
+                        Logger.info(TAG + " requestMicrophonePermissions:[onGranted]");
+                        mMediaState.hasMicrophonePermission.set(true);
+                        if (callback != null) {
+                            callback.onSuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        Logger.warn(TAG + " requestMicrophonePermissions:[onDenied]");
+                        if (callback != null) {
+                            callback.onError(TUICommonDefine.Error.MICROPHONE_NOT_AUTHORIZED,
+                                    "requestMicrophonePermissions" +
+                                            ":[onDenied]");
+                        }
+                    }
+                });
+    }
+
+    private void requestCameraPermissions(TUIRoomDefine.ActionCallback callback) {
+        Logger.info(TAG + " requestCameraPermissions:[]");
+        PermissionRequest.requestCameraPermissions(ContextProvider.getApplicationContext(), new PermissionCallback() {
             @Override
             public void onRequesting() {
-                Logger.info(TAG + " requestPermissions:[onRequesting]");
+                Logger.info(TAG + " requestCameraPermissions:[onRequesting]");
             }
 
             @Override
             public void onGranted() {
-                Logger.info(TAG + " requestPermissions:[onGranted]");
-                mVideoLiveState.mediaState.hasCameraPermission.set(true);
+                Logger.info(TAG + " requestCameraPermissions:[onGranted]");
+                mMediaState.hasCameraPermission.set(true);
                 if (callback != null) {
                     callback.onSuccess();
                 }
@@ -304,9 +288,10 @@ public class MediaManager extends BaseManager {
 
             @Override
             public void onDenied() {
-                Logger.error(TAG + " requestPermissions:[onDenied]");
+                Logger.info(TAG + " requestCameraPermissions:[onDenied]");
                 if (callback != null) {
-                    callback.onError(TUICommonDefine.Error.CAMERA_NOT_AUTHORIZED, "requestPermissions:[onDenied]");
+                    callback.onError(TUICommonDefine.Error.CAMERA_NOT_AUTHORIZED, "requestCameraPermissions:[onDenied" +
+                            "]");
                 }
             }
         });

@@ -3,10 +3,7 @@ package com.trtc.uikit.livekit.livestreamcore.common.utils;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.text.TextUtils;
 
-import com.tencent.qcloud.tuicore.TUIConstants;
-import com.tencent.qcloud.tuicore.TUICore;
 import com.tencent.qcloud.tuicore.permission.PermissionCallback;
 import com.tencent.qcloud.tuicore.permission.PermissionRequester;
 import com.trtc.uikit.livekit.livestreamcore.R;
@@ -19,14 +16,7 @@ public class PermissionRequest {
     public static void requestMicrophonePermissions(Context context, PermissionCallback callback) {
         StringBuilder title = new StringBuilder().append(context.getString(R.string.livestreamcore_permission_microphone));
         StringBuilder reason = new StringBuilder();
-        String microphonePermissionsDescription = (String) TUICore.createObject(
-                TUIConstants.Privacy.PermissionsFactory.FACTORY_NAME,
-                TUIConstants.Privacy.PermissionsFactory.PermissionsName.MICROPHONE_PERMISSIONS, null);
-        if (!TextUtils.isEmpty(microphonePermissionsDescription)) {
-            reason.append(microphonePermissionsDescription);
-        } else {
-            reason.append(context.getString(R.string.livestreamcore_permission_mic_reason));
-        }
+        reason.append(context.getString(R.string.livestreamcore_permission_mic_reason));
         List<String> permissionList = new ArrayList<>();
         permissionList.add(Manifest.permission.RECORD_AUDIO);
 
@@ -59,30 +49,11 @@ public class PermissionRequest {
                 .request();
     }
 
-    public static void requestPermissions(Context context, PermissionCallback callback) {
-        StringBuilder title = new StringBuilder().append(context.getString(R.string.livestreamcore_permission_microphone));
+    public static void requestCameraPermissions(Context context, PermissionCallback callback) {
+        StringBuilder title = new StringBuilder().append(context.getString(R.string.livestreamcore_permission_camera));
         StringBuilder reason = new StringBuilder();
-        String microphonePermissionsDescription = (String) TUICore.createObject(
-                TUIConstants.Privacy.PermissionsFactory.FACTORY_NAME,
-                TUIConstants.Privacy.PermissionsFactory.PermissionsName.MICROPHONE_PERMISSIONS, null);
-        if (!TextUtils.isEmpty(microphonePermissionsDescription)) {
-            reason.append(microphonePermissionsDescription);
-        } else {
-            reason.append(context.getString(R.string.livestreamcore_permission_mic_reason));
-        }
+        reason.append(context.getString(R.string.livestreamcore_permission_camera_reason));
         List<String> permissionList = new ArrayList<>();
-        permissionList.add(Manifest.permission.RECORD_AUDIO);
-
-        title.append(context.getString(R.string.livestreamcore_permission_separator));
-        title.append(context.getString(R.string.livestreamcore_permission_camera));
-        String cameraPermissionsDescription = (String) TUICore.createObject(
-                TUIConstants.Privacy.PermissionsFactory.FACTORY_NAME,
-                TUIConstants.Privacy.PermissionsFactory.PermissionsName.CAMERA_PERMISSIONS, null);
-        if (!TextUtils.isEmpty(cameraPermissionsDescription)) {
-            reason.append(cameraPermissionsDescription);
-        } else {
-            reason.append(context.getString(R.string.livestreamcore_permission_camera_reason));
-        }
         permissionList.add(Manifest.permission.CAMERA);
 
         PermissionCallback permissionCallback = new PermissionCallback() {

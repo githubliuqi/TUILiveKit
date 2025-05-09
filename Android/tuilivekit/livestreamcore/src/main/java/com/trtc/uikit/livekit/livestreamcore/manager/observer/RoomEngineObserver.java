@@ -101,5 +101,6 @@ public class RoomEngineObserver extends TUIRoomObserver {
     public void onKickedOutOfRoom(String roomId, TUIRoomDefine.KickedOutOfRoomReason reason, String message) {
         Logger.info(mTag + " onKickedOutOfRoom:[roomId:" + roomId + ",reason:" + reason + ",message:"
                 + message + "]");
+        mVideoLiveManager.removeObserver();
     }
 }

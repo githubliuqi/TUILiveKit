@@ -1,6 +1,5 @@
 package com.trtc.uikit.livekit.livestreamcore.manager;
 
-import com.tencent.imsdk.v2.V2TIMManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.api.ILiveStream;
 import com.trtc.uikit.livekit.livestreamcore.manager.api.impl.LiveStreamImpl;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.BattleManager;
@@ -10,7 +9,6 @@ import com.trtc.uikit.livekit.livestreamcore.manager.module.MediaManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.RoomManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.UserManager;
 import com.trtc.uikit.livekit.livestreamcore.manager.module.ViewManager;
-import com.trtc.uikit.livekit.livestreamcore.manager.observer.IMObserver;
 import com.trtc.uikit.livekit.livestreamcore.manager.observer.LiveBattleManagerObserver;
 import com.trtc.uikit.livekit.livestreamcore.manager.observer.LiveConnectionManagerObserver;
 import com.trtc.uikit.livekit.livestreamcore.manager.observer.LiveLayoutManagerObserver;
@@ -38,7 +36,6 @@ public class LiveStreamManager {
     private final LiveConnectionManagerObserver mliveConnectionManagerObserver;
     private final LiveBattleManagerObserver     mLiveBattleManagerObserver;
     private final LiveLayoutManagerObserver     mLiveLayoutManagerObserver;
-    private final IMObserver                    mIMObserver;
 
     public LiveStreamManager() {
         mState = new LiveStreamState();
@@ -55,12 +52,10 @@ public class LiveStreamManager {
         mliveConnectionManagerObserver = new LiveConnectionManagerObserver(this);
         mLiveBattleManagerObserver = new LiveBattleManagerObserver(this);
         mLiveLayoutManagerObserver = new LiveLayoutManagerObserver(this);
-        mIMObserver = new IMObserver(this);
         mLiveService.addRoomEngineObserver(mRoomEngineObserver);
         mLiveService.addLiveConnectionManagerObserver(mliveConnectionManagerObserver);
         mLiveService.addLiveBattleManagerObserver(mLiveBattleManagerObserver);
         mLiveService.addLiveLayoutManagerObserver(mLiveLayoutManagerObserver);
-        V2TIMManager.getInstance().addIMSDKListener(mIMObserver);
     }
 
     public void destroy() {
@@ -79,7 +74,6 @@ public class LiveStreamManager {
         mLiveService.removeLiveConnectionManagerObserver(mliveConnectionManagerObserver);
         mLiveService.removeLiveBattleManagerObserver(mLiveBattleManagerObserver);
         mLiveService.removeLiveLayoutManagerObserver(mLiveLayoutManagerObserver);
-        V2TIMManager.getInstance().removeIMSDKListener(mIMObserver);
     }
 
     public RoomManager getRoomManager() {

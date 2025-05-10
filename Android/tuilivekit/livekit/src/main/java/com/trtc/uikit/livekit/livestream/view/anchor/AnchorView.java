@@ -285,6 +285,14 @@ public class AnchorView extends BasicView {
             mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
                 @Override
                 public void onSuccess(RoomInfo roomInfo) {
+                    if (mContext instanceof Activity) {
+                        Activity activity = (Activity) mContext;
+                        if (activity.isFinishing() || activity.isDestroyed()) {
+                            LiveStreamLog.warn(TAG + " activity is exit, stopLiveStream");
+                            mLiveCoreView.stopLiveStream(null);
+                            return;
+                        }
+                    }
                     mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
                     mLiveManager.getRoomManager().updateRoomState(roomInfo);
                     mLiveManager.getRoomManager().updateLiveInfo();

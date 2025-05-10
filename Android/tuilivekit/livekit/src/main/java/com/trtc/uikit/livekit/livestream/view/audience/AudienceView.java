@@ -227,8 +227,8 @@ public class AudienceView extends BasicView {
                 if (mContext instanceof Activity) {
                     Activity activity = (Activity) mContext;
                     if (activity.isFinishing() || activity.isDestroyed()) {
-                        LiveStreamLog.warn(TAG + " activity is exit, stopLiveStream");
-                        mLiveCoreView.stopLiveStream(null);
+                        LiveStreamLog.warn(TAG + " activity is exit, leaveLiveStream");
+                        mLiveCoreView.leaveLiveStream(null);
                         return;
                     }
                 }

@@ -50,6 +50,7 @@ import com.trtc.uikit.livekit.component.gift.store.GiftStore;
 import com.trtc.uikit.livekit.component.gift.view.BarrageViewTypeDelegate;
 import com.trtc.uikit.livekit.component.gift.view.GiftBarrageAdapter;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.manager.module.DashboardManager;
 import com.trtc.uikit.livekit.livestream.manager.module.MediaManager;
@@ -88,6 +89,7 @@ import java.util.Map;
 
 @SuppressLint("ViewConstructor")
 public class AnchorView extends BasicView {
+    private static final String TAG = "AnchorView";
 
     private       LiveCoreView                           mLiveCoreView;
     private       FrameLayout                            mLayoutPreview;
@@ -405,6 +407,14 @@ public class AnchorView extends BasicView {
             mLiveCoreView.startLiveStream(roomInfo, new GetRoomInfoCallback() {
                 @Override
                 public void onSuccess(RoomInfo roomInfo) {
+                    if (mContext instanceof Activity) {
+                        Activity activity = (Activity) mContext;
+                        if (activity.isFinishing() || activity.isDestroyed()) {
+                            LiveStreamLog.warn(TAG + " activity is exit, stopLiveStream");
+                            mLiveCoreView.stopLiveStream(null);
+                            return;
+                        }
+                    }
                     mLiveManager.getRoomManager().updateLiveStatus(RoomState.LiveStatus.PUSHING);
                     mLiveManager.getRoomManager().updateRoomState(roomInfo);
                     mLiveManager.getRoomManager().updateLiveInfo();
@@ -438,7 +448,10 @@ public class AnchorView extends BasicView {
     }
 
     private void initEndLiveStreamView() {
-        mImageEndLive.setOnClickListener(v -> showLiveStreamEndDialog());
+        mImageEndLive.setOnClickListener(v -> {
+            LiveStreamLog.info(TAG + " click to exit room, showLiveStreamEndDialog");
+            showLiveStreamEndDialog();
+        });
     }
 
     private void initFloatWindowView() {

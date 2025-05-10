@@ -50,6 +50,7 @@ import com.trtc.uikit.livekit.component.gift.service.GiftCacheService;
 import com.trtc.uikit.livekit.component.gift.store.GiftStore;
 import com.trtc.uikit.livekit.component.gift.view.BarrageViewTypeDelegate;
 import com.trtc.uikit.livekit.component.gift.view.GiftBarrageAdapter;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.error.ErrorHandler;
 import com.trtc.uikit.livekit.livestream.manager.module.MediaManager;
 import com.trtc.uikit.livekit.livestream.manager.observer.LiveBattleManagerObserver;
@@ -78,6 +79,8 @@ import java.util.Map;
 
 @SuppressLint("ViewConstructor")
 public class AudienceView extends BasicView {
+    private static final String TAG = "AudienceView";
+
     private       LiveCoreView                         mLiveCoreView;
     private       FrameLayout                          mLayoutPlaying;
     private       AudienceDashboardView                mAudienceDashboardView;
@@ -221,6 +224,14 @@ public class AudienceView extends BasicView {
         mLiveCoreView.joinLiveStream(mRoomState.roomId, new GetRoomInfoCallback() {
             @Override
             public void onSuccess(RoomInfo roomInfo) {
+                if (mContext instanceof Activity) {
+                    Activity activity = (Activity) mContext;
+                    if (activity.isFinishing() || activity.isDestroyed()) {
+                        LiveStreamLog.warn(TAG + " activity is exit, stopLiveStream");
+                        mLiveCoreView.stopLiveStream(null);
+                        return;
+                    }
+                }
                 mRoomManager.updateRoomState(roomInfo);
                 mRoomState.liveStatus.set(PLAYING);
             }
@@ -233,7 +244,6 @@ public class AudienceView extends BasicView {
                 } else {
                     ErrorHandler.onError(error);
                 }
-                removeAllViews();
                 if (mContext instanceof Activity) {
                     ((Activity) mContext).finish();
                 }
@@ -278,7 +288,7 @@ public class AudienceView extends BasicView {
 
 
     private void updateDashboardStatus() {
-        mLayoutPlaying.removeAllViews();
+        mLayoutPlaying.setVisibility(GONE);
         mAudienceDashboardView.setVisibility(VISIBLE);
 
         initAudienceDashboardView();
@@ -290,6 +300,7 @@ public class AudienceView extends BasicView {
 
     private void initExitRoomView() {
         OnClickListener listener = v -> {
+            LiveStreamLog.info(TAG + " click to exit room, mContext:" + mContext);
             mLiveCoreView.leaveLiveStream(null);
             if (mContext instanceof Activity) {
                 ((Activity) mContext).finish();
@@ -458,10 +469,10 @@ public class AudienceView extends BasicView {
     }
 
     private void destroy() {
+        LiveStreamLog.info(TAG + " destroy");
         mLiveCoreView.leaveLiveStream(new TUIRoomDefine.ActionCallback() {
             @Override
             public void onSuccess() {
-                removeAllViews();
                 if (mContext instanceof Activity) {
                     ((Activity) mContext).finish();
                 }

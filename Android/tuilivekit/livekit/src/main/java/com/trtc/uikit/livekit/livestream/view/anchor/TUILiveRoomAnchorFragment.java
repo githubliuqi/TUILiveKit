@@ -26,6 +26,7 @@ import com.trtc.uikit.component.common.StateCache;
 import com.trtc.uikit.livekit.R;
 import com.trtc.uikit.livekit.component.floatwindow.service.FloatWindowManager;
 import com.trtc.uikit.livekit.livestream.manager.LiveStreamManager;
+import com.trtc.uikit.livekit.livestream.manager.api.LiveStreamLog;
 import com.trtc.uikit.livekit.livestream.manager.module.RoomManager;
 import com.trtc.uikit.livekit.livestream.state.RoomState;
 
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotification {
+    public static final String            TAG                    = "TUILiveRoomAnchorFragment";
     public static final String            KEY_EXTENSION_NAME     = "TEBeautyExtension";
     public static final String            NOTIFY_START_ACTIVITY  = "onStartActivityNotifyEvent";
     public static final String            METHOD_ACTIVITY_RESULT = "onActivityResult";
@@ -48,6 +50,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         @Override
         public void handleOnBackPressed() {
             RoomState.LiveStatus liveStatus = mLiveManager.getRoomState().liveStatus.get();
+            LiveStreamLog.info(TAG + " handleOnBackPressed, liveStatus:" + liveStatus);
             if (RoomState.LiveStatus.PUSHING == liveStatus) {
                 mAnchorView.destroy();
             } else {
@@ -105,6 +108,7 @@ public class TUILiveRoomAnchorFragment extends Fragment implements ITUINotificat
         super.onDestroy();
         TUICore.unRegisterEvent(this);
         FloatWindowManager floatWindowManager = FloatWindowManager.getInstance();
+        LiveStreamLog.info(TAG + " onDestroy, isWillOpenFloatWindow:" + floatWindowManager.isWillOpenFloatWindow());
         if (floatWindowManager.isWillOpenFloatWindow()) {
             floatWindowManager.setLiveStreamManager(mLiveManager);
             floatWindowManager.showFloatWindow();

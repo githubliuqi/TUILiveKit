@@ -61,7 +61,8 @@ public class AudienceListObserver extends TUIRoomObserver {
         audienceUser.userName = userInfo.userName;
         audienceUser.avatarUrl = userInfo.avatarUrl;
         audienceUser.userRole = userInfo.userRole;
-
+        mAudienceListState.audienceList.add(audienceUser);
+        LOGGER.info("addUser,userId:" + audienceUser.userId + ",listSize:" + mAudienceListState.audienceList.get().size());
         List<String> ids = new ArrayList<>();
         ids.add(userInfo.userId);
         V2TIMManager.getInstance().getUsersInfo(ids, new V2TIMValueCallback<List<V2TIMUserFullInfo>>() {
@@ -70,33 +71,15 @@ public class AudienceListObserver extends TUIRoomObserver {
                 for (V2TIMUserFullInfo fullInfo : v2TIMUserFullInfos) {
                     if (Objects.equals(userInfo.userId, fullInfo.getUserID())) {
                         audienceUser.nameCard = String.valueOf(fullInfo.getLevel());
+                        mAudienceListState.audienceList.notifyDataChanged();
                         break;
                     }
                 }
-                addUser(audienceUser);
             }
 
             @Override
             public void onError(int code, String desc) {
                 LOGGER.error("getUsersInfo onError:" + code + "," + desc);
-                addUser(audienceUser);
-            }
-
-            private void addUser(TUIRoomDefine.UserInfo user) {
-                TUIRoomDefine.UserInfo oldUser = null;
-                LinkedHashSet<TUIRoomDefine.UserInfo> audienceList = mAudienceListState.audienceList.get();
-                for (TUIRoomDefine.UserInfo item : audienceList) {
-                    if (TextUtils.equals(item.userId, user.userId)) {
-                        oldUser = item;
-                        break;
-                    }
-                }
-                if (oldUser != null) {
-                    audienceList.remove(oldUser);
-                }
-                audienceList.add(user);
-                LOGGER.info("addUser,userId:" + user.userId + ",listSize:" + audienceList.size());
-                mAudienceListState.audienceList.set(audienceList);
             }
         });
     }

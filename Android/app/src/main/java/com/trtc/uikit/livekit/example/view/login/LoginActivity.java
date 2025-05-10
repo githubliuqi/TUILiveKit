@@ -12,6 +12,7 @@ import com.tencent.imsdk.v2.V2TIMUserFullInfo;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tuicore.TUILogin;
 import com.tencent.qcloud.tuicore.interfaces.TUICallback;
+import com.tencent.qcloud.tuicore.util.SPUtils;
 import com.tencent.qcloud.tuicore.util.ToastUtil;
 import com.tencent.qcloud.tuikit.debug.GenerateTestUserSig;
 import com.trtc.uikit.livekit.example.BaseActivity;
@@ -34,9 +35,10 @@ public class LoginActivity extends BaseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         mEditUserId = findViewById(R.id.et_userId);
-
+        mEditUserId.setText(SPUtils.getInstance("livekit").getString("userId"));
         findViewById(R.id.btn_login).setOnClickListener(v -> {
             String userId = mEditUserId.getText().toString().trim();
+            SPUtils.getInstance("livekit").put("userId", userId);
             login(userId);
         });
     }

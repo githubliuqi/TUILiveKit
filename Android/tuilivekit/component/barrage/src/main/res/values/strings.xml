@@ -7,12 +7,12 @@
     <string name="livekit_barrage_warning_not_empty">"input can't be empty!"</string>
     <string name="livekit_barrage_anchor">Anchor</string>
     <!-- Error Toast -->
-    <string name="live_barrage_error_failed">Oops! Our system hiccuped. Try again later</string>
-    <string name="live_barrage_error_freq_limit">Request Rate Limited, Please Try Again Later</string>
-    <string name="live_barrage_error_sensitive_word">Sensitive words are detected, please modify it and try again</string>
-    <string name="live_barrage_error_disable_message_by_admin">You have been muted in the current room</string>
-    <string name="live_barrage_error_network">The network is abnormal, please try again later</string>
-    <string name="live_barrage_error_content_is_long">The content is too long, please reduce the content and try again</string>
+    <string name="live_barrage_error_failed">The room may be in a weak network environment. Please check.</string>
+    <string name="live_barrage_error_freq_limit">Frequent requests. Please try again later.</string>
+    <string name="live_barrage_error_sensitive_word">Sensitive words detected. Please modify and try again.</string>
+    <string name="live_barrage_error_disable_message_by_admin">You have been muted in the current room.</string>
+    <string name="live_barrage_error_network">The room may be in a weak network environment. Please check.</string>
+    <string name="live_barrage_error_content_is_long">The content is too long. Please shorten it and try again.</string>
     <string name="live_barrage_error_group_not_found">The room has been disbanded</string>
-    <string name="live_barrage_error_invalid_parameters">The input parameters are incorrect</string>
+    <string name="live_barrage_error_invalid_parameters">The room may be in a weak network environment. Please check or contact the administrator.</string>
 </resources>
